@@ -15,20 +15,33 @@ function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
   ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH);
 }
 
-// const characterActions = ['up', 'right', 'down', 'left'];
-const characterActions = ['up'];
+const characterActions = ['up', 'right', 'down', 'left'];
 
 class Character {
   constructor() {
     this.width = 103.0625;
     this.height = 113.125;
-    this.frameX = 3;
-    this.frameY = 3;
-    this.x = 0;
-    this.y = 0;
-    this.speed = Math.random() * 1.5 + 3.5;
+    this.x = this.randomBetween(0, canvas.width - this.width);
+    this.y = this.randomBetween(0, canvas.height - this.height);
+    this.speed = 4;
     this.action =
       characterActions[Math.floor(Math.random() * characterActions.length)];
+    if (this.action === 'up') {
+      this.frameX = 3;
+      this.frameY = 0;
+    }
+    if (this.action === 'right') {
+      this.frameX = 3;
+      this.frameY = 3;
+    }
+    if (this.action === 'left') {
+      this.frameX = 3;
+      this.frameY = 3;
+    }
+    if (this.action === 'down') {
+      this.frameX = 0;
+      this.frameY = 6;
+    }
   }
   draw() {
     drawSprite(
@@ -43,40 +56,82 @@ class Character {
       this.height
     );
 
-    if (this.frameX < 13) {
-      this.frameX++;
-    } else {
-      this.frameX = 3;
+    if (this.action === 'up') {
+      if (this.frameX < 13) {
+        this.frameX++;
+      } else {
+        this.frameX = 3;
+      }
     }
+    if (this.action === 'right') {
+      if (this.frameX < 13) {
+        this.frameX++;
+      } else {
+        this.frameX = 3;
+      }
+    }
+    if (this.action === 'left') {
+      this.frameX = 3;
+      this.frameY = 3;
+    }
+    if (this.action === 'down') {
+      if (this.frameX < 13) {
+        this.frameX++;
+      } else {
+        this.frameX = 3;
+      }
+    }
+  }
+
+  randomBetween(min, max) {
+    return Math.floor(Math.random() * max - min);
   }
 
   update() {
     if (this.action === 'up') {
-      if (this.y < canvas.height + this.height) {
-        this.y += this.speed;
+      if (this.y < 0 - this.height) {
+        this.y = canvas.height;
+        this.x = this.randomBetween(0, canvas.width - this.width);
       } else {
-        this.y = 0 - this.height;
-        this.x = Math.random() * canvas.width - this.width;
+        this.y -= this.speed;
       }
     }
+
     if (this.action === 'right') {
-      if (this.x < canvas.width + this.width) {
-        this.x += this.speed;
-      } else {
+      if (this.x > canvas.width) {
         this.x = 0 - this.width;
-        this.y = Math.random() * canvas.height - this.height;
+        this.y = this.randomBetween(0, canvas.height - this.height);
+      } else {
+        this.x += this.speed;
       }
     }
+
     if (this.action === 'down') {
+      if (this.y > canvas.height) {
+        this.y = 0 - this.height;
+        this.x = this.randomBetween(0, canvas.width - this.width);
+      } else {
+        this.y += this.speed;
+      }
     }
+
     if (this.action === 'left') {
+      if (this.x < 0 - this.width) {
+        this.x = canvas.width;
+        this.y = this.randomBetween(0, canvas.height - this.height);
+      } else {
+        this.x -= this.speed;
+      }
     }
   }
 }
 
 images.player.addEventListener('load', (e) => {
   const characters = [];
-  characters.push(new Character());
+  const numberOfCharacters = 10;
+  for (let i = 0; i < 10; i++) {
+    characters.push(new Character());
+  }
 
   // ==========================================================
   // engine
@@ -84,10 +139,14 @@ images.player.addEventListener('load', (e) => {
   const engine = new Engine(
     (timestep) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      characters[0].update();
+      for (let i = 0; i < characters.length; i++) {
+        characters[i].update();
+      }
     },
     () => {
-      characters[0].draw();
+      for (let i = 0; i < characters.length; i++) {
+        characters[i].draw();
+      }
     }
   );
 
