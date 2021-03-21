@@ -16,14 +16,15 @@ body {
   left: -250%;
   width: 500%;
   height: 500%;
-  transform: rotate3d(1,0,1,45deg);
+  transform: rotate3d(1, 0, 1, 45deg);
   background: url('../images/floor.png');
 }
 
 #canvas {
   position: absolute;
-  top: 0; 
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  border: solid 1px;
 }
