@@ -42,11 +42,12 @@ class Animation {
     this.frameCycle = [0, 1, 0, 2];
     this.frameCycleIndex = 0;
     this.actionCycle = {
+      down: 0,
       up: 1,
       right: 2,
-      down: 0,
       left: 3,
     };
+    this.currentActionCycle = 0;
     this.frameCount = 0;
     this.updated = false;
   }
@@ -54,13 +55,18 @@ class Animation {
   get frame() {
     return this.spriteSheet.getFrame(
       this.frameCycle[this.frameCycleIndex],
-      this.actionCycle.left
+      this.currentActionCycle
     );
   }
 
-  animate() {
-    this.frameCount++;
+  idle() {
+    this.frameCycleIndex = 0;
+  }
+
+  animate(actionCycle) {
+    this.currentActionCycle = actionCycle;
     this.updated = false;
+    this.frameCount++;
     if (this.frameCount === 10) {
       this.frameCount = 0;
       this.frameCycleIndex++;
