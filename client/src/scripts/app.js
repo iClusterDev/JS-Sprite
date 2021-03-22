@@ -1,6 +1,7 @@
 import characterSrc from '../images/character2.png';
 import Engine from './Engine';
 import Animation from './Animation';
+import Controller from './Controller';
 
 // ==========================================================
 // resource load
@@ -26,18 +27,6 @@ window.addEventListener('resize', () => {
 // ==========================================================
 // input
 // ==========================================================
-let keyPresses = {};
-
-window.addEventListener('keydown', keyDownListener, false);
-function keyDownListener(event) {
-  keyPresses[event.key] = true;
-}
-
-window.addEventListener('keyup', keyUpListener, false);
-function keyUpListener(event) {
-  keyPresses[event.key] = false;
-}
-
 const SPEED = 2;
 let positionX = 0;
 let positionY = 0;
@@ -52,6 +41,26 @@ let actionCycle = FACING_DOWN;
 // init
 // ==========================================================
 function init() {
+  const keyMap = [
+    { code: 'ArrowRight', action: 'right' },
+    { code: 'ArrowDown', action: 'down' },
+    { code: 'ArrowLeft', action: 'left' },
+    { code: 'ArrowUp', action: 'up' },
+    { code: 'KeyD', action: 'right' },
+    { code: 'KeyS', action: 'down' },
+    { code: 'KeyA', action: 'left' },
+    { code: 'KeyW', action: 'up' },
+  ];
+  const controller = new Controller(keyMap);
+  window.addEventListener('keydown', (event) => {
+    const { type, code } = event;
+    controller.keyDownUp(type, code);
+  });
+  window.addEventListener('keyup', (event) => {
+    const { type, code } = event;
+    controller.keyDownUp(type, code);
+  });
+
   const animation = new Animation({
     spriteSheet: spriteSheet,
     scale: 3,
@@ -61,21 +70,21 @@ function init() {
 
   const gameLoop = new Engine(
     function update() {
-      if (keyPresses.w) {
+      if (controller.up.isActive) {
         positionY -= SPEED;
         actionCycle = FACING_UP;
         animation.animate(actionCycle);
-      } else if (keyPresses.s) {
+      } else if (controller.right.isActive) {
+        positionX += SPEED;
+        actionCycle = FACING_RIGHT;
+        animation.animate(actionCycle);
+      } else if (controller.down.isActive) {
         positionY += SPEED;
         actionCycle = FACING_DOWN;
         animation.animate(actionCycle);
-      } else if (keyPresses.a) {
+      } else if (controller.left.isActive) {
         positionX -= SPEED;
         actionCycle = FACING_LEFT;
-        animation.animate(actionCycle);
-      } else if (keyPresses.d) {
-        positionX += SPEED;
-        actionCycle = FACING_RIGHT;
         animation.animate(actionCycle);
       } else {
         animation.idle();
@@ -83,7 +92,6 @@ function init() {
     },
 
     function render() {
-      // if (animation.updated) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.putImageData(
         animation.frame,
@@ -94,7 +102,6 @@ function init() {
         animation.frame.width,
         animation.frame.height
       );
-      // }
     }
   );
 
