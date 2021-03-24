@@ -1,4 +1,4 @@
-import characterSrc from '../images/character2.png';
+import playerImg from '../images/player.png';
 import Engine from './core/Engine';
 import Player from './core/Player';
 
@@ -6,7 +6,7 @@ import Player from './core/Player';
 // resource load
 // ==========================================================
 const spriteSheet = new Image();
-spriteSheet.src = characterSrc;
+spriteSheet.src = playerImg;
 spriteSheet.onload = function () {
   init();
 };
