@@ -1,7 +1,6 @@
 import characterSrc from '../images/character2.png';
 import Engine from './Engine';
-import Animation from './Animation';
-import Controller from './Controller';
+import Player from './Player';
 
 // ==========================================================
 // resource load
@@ -27,83 +26,105 @@ window.addEventListener('resize', () => {
 // ==========================================================
 // input
 // ==========================================================
-const SPEED = 2;
-let positionX = 0;
-let positionY = 0;
-
-const FACING_DOWN = 0;
-const FACING_UP = 1;
-const FACING_LEFT = 2;
-const FACING_RIGHT = 3;
-let actionCycle = FACING_DOWN;
+const playerConfig = {
+  position: {
+    x: 100,
+    y: 100,
+  },
+  input: [
+    {
+      action: 'up',
+      code: 'KeyW',
+    },
+    {
+      action: 'right',
+      code: 'KeyD',
+    },
+    {
+      action: 'down',
+      code: 'KeyS',
+    },
+    {
+      action: 'left',
+      code: 'KeyA',
+    },
+  ],
+  graphics: {
+    spriteSheet: spriteSheet,
+    columns: 3,
+    rows: 4,
+    scale: 3,
+  },
+  animation: {
+    animationStep: 10,
+    animationMap: [
+      {
+        action: 'down',
+        cycle: 0,
+        sequence: [0, 1, 0, 2],
+      },
+      {
+        action: 'downIdle',
+        cycle: 0,
+        sequence: [0],
+        default: true,
+      },
+      {
+        action: 'up',
+        cycle: 1,
+        sequence: [0, 1, 0, 2],
+      },
+      {
+        action: 'upIdle',
+        cycle: 1,
+        sequence: [0],
+      },
+      {
+        action: 'left',
+        cycle: 2,
+        sequence: [0, 1, 0, 2],
+      },
+      {
+        action: 'leftIdle',
+        cycle: 2,
+        sequence: [0],
+      },
+      {
+        action: 'right',
+        cycle: 3,
+        sequence: [0, 1, 0, 2],
+      },
+      {
+        action: 'rightIdle',
+        cycle: 3,
+        sequence: [0],
+      },
+    ],
+  },
+};
 
 // ==========================================================
 // init
 // ==========================================================
 function init() {
-  const keyMap = [
-    { code: 'ArrowRight', action: 'right' },
-    { code: 'ArrowDown', action: 'down' },
-    { code: 'ArrowLeft', action: 'left' },
-    { code: 'ArrowUp', action: 'up' },
-    { code: 'KeyD', action: 'right' },
-    { code: 'KeyS', action: 'down' },
-    { code: 'KeyA', action: 'left' },
-    { code: 'KeyW', action: 'up' },
-  ];
-  const controller = new Controller(keyMap);
-  window.addEventListener('keydown', (event) => {
-    const { type, code } = event;
-    controller.keyDownUp(type, code);
-  });
-  window.addEventListener('keyup', (event) => {
-    const { type, code } = event;
-    controller.keyDownUp(type, code);
-  });
-
-  const animation = new Animation({
-    spriteSheet: spriteSheet,
-    scale: 3,
-    rows: 4,
-    columns: 3,
-  });
+  const player = new Player(playerConfig);
 
   const gameLoop = new Engine(
     function update() {
-      if (controller.up.isActive) {
-        positionY -= SPEED;
-        actionCycle = FACING_UP;
-        animation.animate(actionCycle);
-      } else if (controller.right.isActive) {
-        positionX += SPEED;
-        actionCycle = FACING_RIGHT;
-        animation.animate(actionCycle);
-      } else if (controller.down.isActive) {
-        positionY += SPEED;
-        actionCycle = FACING_DOWN;
-        animation.animate(actionCycle);
-      } else if (controller.left.isActive) {
-        positionX -= SPEED;
-        actionCycle = FACING_LEFT;
-        animation.animate(actionCycle);
-      } else {
-        animation.idle();
-      }
+      player.update();
     },
-
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.putImageData(
-        animation.frame,
-        positionX,
-        positionY,
+        player.frame,
+        player.position.x,
+        player.position.y,
         0,
         0,
-        animation.frame.width,
-        animation.frame.height
+        player.frame.width,
+        player.frame.height
       );
     }
   );
-
-  gameLoop.start();
+  // gameLoop.start();
 }

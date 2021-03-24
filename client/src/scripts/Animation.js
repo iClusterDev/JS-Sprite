@@ -1,79 +1,70 @@
 // ==========================================================
-// spritesheet
-// ==========================================================
-class SpriteSheet {
-  constructor(config = {}) {
-    const { spriteSheet, rows, columns, scale = 1 } = config;
-    if (!spriteSheet || !rows || !columns)
-      throw new Error('SpriteSheet(): Missing required parameter!');
-
-    this.buffer = new OffscreenCanvas(
-      spriteSheet.width * scale,
-      spriteSheet.height * scale
-    ).getContext('2d');
-    this.frameW = (spriteSheet.width / columns) * scale;
-    this.frameH = (spriteSheet.height / rows) * scale;
-
-    this.buffer.drawImage(
-      spriteSheet,
-      0,
-      0,
-      spriteSheet.width * scale,
-      spriteSheet.height * scale
-    );
-  }
-
-  getFrame(sX, sY) {
-    return this.buffer.getImageData(
-      this.frameW * sX,
-      this.frameH * sY,
-      this.frameW,
-      this.frameH
-    );
-  }
-}
-
-// ==========================================================
 // animation
+// FIXME
+// set props animationFrameX/Y
 // ==========================================================
 class Animation {
-  constructor(config = {}) {
-    this.spriteSheet = new SpriteSheet(config);
-    this.frameCycle = [0, 1, 0, 2];
-    this.frameCycleIndex = 0;
-    this.actionCycle = {
-      down: 0,
-      up: 1,
-      right: 2,
-      left: 3,
-    };
-    this.currentActionCycle = 0;
-    this.frameCount = 0;
-    this.updated = false;
+  #updated;
+  #frameCounter;
+  #animationMap;
+  #animationStep;
+  #currentAnimation;
+  #currentSequenceIndex;
+
+  constructor(animationConfig = {}) {
+    const { animationStep, animationMap } = animationConfig;
+    const defaultAnimation =
+      animationMap.find(
+        (animationMapItem) => animationMapItem.default === true
+      ) || animationMap[0];
+
+    this.#animationMap = animationMap;
+    this.#animationStep = animationStep;
+    this.#currentAnimation = defaultAnimation;
+    this.#currentSequenceIndex = 0;
+    this.#frameCounter = 0;
+    this.#updated = false;
+
+    // populate these
+    this.animationFrameX = 0;
+    this.animationFrameY = 0;
+  }
+
+  get changed() {
+    return this.#updated;
+  }
+
+  get action() {
+    return this.#currentAnimation.action;
   }
 
   get frame() {
-    return this.spriteSheet.getFrame(
-      this.frameCycle[this.frameCycleIndex],
-      this.currentActionCycle
+    return {
+      row: this.#currentAnimation.cycle,
+      column: this.#currentAnimation.sequence[this.#currentSequenceIndex],
+    };
+  }
+
+  #set(action) {
+    this.#currentAnimation = this.#animationMap.find(
+      (animationMapItem) => animationMapItem.action === action
     );
+    this.#updated = true;
   }
 
-  idle() {
-    this.frameCycleIndex = 0;
-  }
+  animate(action) {
+    this.#frameCounter++;
+    this.#updated = false;
 
-  animate(actionCycle) {
-    this.currentActionCycle = actionCycle;
-    this.updated = false;
-    this.frameCount++;
-    if (this.frameCount === 10) {
-      this.frameCount = 0;
-      this.frameCycleIndex++;
-      if (this.frameCycleIndex >= this.frameCycle.length) {
-        this.frameCycleIndex = 0;
-      }
-      this.updated = true;
+    if (action !== this.#currentAnimation.action) this.#set(action);
+
+    if (this.#frameCounter === this.#animationStep) {
+      this.#frameCounter = 0;
+      this.#currentSequenceIndex++;
+      if (this.#currentSequenceIndex >= this.#currentAnimation.sequence.length)
+        this.#currentSequenceIndex = 0;
+
+      this.#updated = true;
     }
   }
 }

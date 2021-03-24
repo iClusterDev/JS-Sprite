@@ -31,8 +31,23 @@ class Controller {
         const { action } = keyItem;
         this[action] = new KeyInput();
       });
+
+      this.#init();
+
       return this;
     }
+  }
+
+  #init() {
+    window.addEventListener('keydown', (event) => {
+      const { type, code } = event;
+      this.keyDownUp(type, code);
+    });
+
+    window.addEventListener('keyup', (event) => {
+      const { type, code } = event;
+      this.keyDownUp(type, code);
+    });
   }
 
   keyDownUp(type, code) {
