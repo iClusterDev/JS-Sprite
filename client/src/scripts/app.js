@@ -1,6 +1,6 @@
 import characterSrc from '../images/character2.png';
-import Engine from './Engine';
-import Player from './Player';
+import Engine from './core/Engine';
+import Player from './core/Player';
 
 // ==========================================================
 // resource load
