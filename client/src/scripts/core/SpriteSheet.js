@@ -9,30 +9,38 @@ class SpriteSheet {
     if (!spriteSheet || !rows || !columns)
       throw new Error('SpriteSheet(): Missing required parameter!');
 
+    this.spriteSheet = spriteSheet;
+    this.frameW = spriteSheet.width / columns;
+    this.frameH = spriteSheet.height / rows;
     this.#buffer = new OffscreenCanvas(
-      spriteSheet.width * scale,
-      spriteSheet.height * scale
+      this.frameW * scale,
+      this.frameH * scale
     ).getContext('2d');
+  }
 
-    this.frameW = (spriteSheet.width / columns) * scale;
-    this.frameH = (spriteSheet.height / rows) * scale;
-
-    this.#buffer.drawImage(
-      spriteSheet,
+  clearFrame() {
+    this.#buffer.clearRect(
       0,
       0,
-      spriteSheet.width * scale,
-      spriteSheet.height * scale
+      this.#buffer.canvas.width,
+      this.#buffer.canvas.height
     );
   }
 
   getFrame(column, row) {
-    return this.#buffer.getImageData(
+    this.clearFrame();
+    this.#buffer.drawImage(
+      this.spriteSheet,
       this.frameW * column,
       this.frameH * row,
       this.frameW,
-      this.frameH
+      this.frameH,
+      0,
+      0,
+      this.#buffer.canvas.width,
+      this.#buffer.canvas.height
     );
+    return this.#buffer.canvas;
   }
 }
 

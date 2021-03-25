@@ -26,8 +26,8 @@ class Animation {
     this.#updated = false;
 
     // populate these
-    this.animationFrameX = 0;
-    this.animationFrameY = 0;
+    // this.animationFrameX = 0;
+    // this.animationFrameY = 0;
   }
 
   get changed() {
@@ -49,16 +49,14 @@ class Animation {
     this.#currentAnimation = this.#animationMap.find(
       (animationMapItem) => animationMapItem.action === action
     );
-    this.#updated = true;
   }
 
   animate(action) {
     this.#frameCounter++;
     this.#updated = false;
 
-    if (action !== this.#currentAnimation.action) this.#set(action);
-
     if (this.#frameCounter === this.#animationStep) {
+      if (action !== this.#currentAnimation.action) this.#set(action);
       this.#frameCounter = 0;
       this.#currentSequenceIndex++;
       if (this.#currentSequenceIndex >= this.#currentAnimation.sequence.length)

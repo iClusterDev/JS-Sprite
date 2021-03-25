@@ -1,10 +1,54 @@
 import playerImg from '../images/player.png';
+import floorImg from '../images/floor.png';
 import Engine from './core/Engine';
 import Player from './core/Player';
 
 // ==========================================================
 // resource load
 // ==========================================================
+// const resourceConfig = {
+//   images: [
+//     {
+//       name: 'playerImg',
+//       source: playerImg,
+//     },
+//     {
+//       name: 'floorImg',
+//       source: floorImg,
+//     },
+//   ],
+// };
+
+// class Resource {
+//   constructor(config = {}) {
+//     const { images, sounds } = config;
+//     this.imagePromises = images.map((image) => {
+//       return new Promise((resolve, reject) => {
+//         const newImage = new Image();
+//         newImage.onload = resolve({ name: image.name, image: newImage });
+//         newImage.onerror = reject(new Error('resource: error'));
+//         newImage.src = image.source;
+//       });
+//     });
+//   }
+
+//   getImage(name) {}
+
+//   loadAll() {
+//     const self = this;
+//     return new Promise((resolve, reject) => {
+//       Promise.all(self.imagePromises).then((resolvedImages) => {
+//         self.images = resolvedImages;
+//         self.ready = true;
+//         resolve('ok');
+//       });
+//     });
+//   }
+// }
+
+// const resource = new Resource(resourceConfig);
+// resource.loadAll().then(() => init());
+
 const spriteSheet = new Image();
 spriteSheet.src = playerImg;
 spriteSheet.onload = function () {
@@ -115,16 +159,18 @@ function init() {
     },
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.putImageData(
+      ctx.drawImage(
         player.frame,
+        0,
+        0,
+        player.frame.width,
+        player.frame.height,
         player.position.x,
         player.position.y,
-        0,
-        0,
         player.frame.width,
         player.frame.height
       );
     }
   );
-  // gameLoop.start();
+  gameLoop.start();
 }
