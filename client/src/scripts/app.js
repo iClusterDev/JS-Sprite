@@ -1,4 +1,5 @@
 import playerImg from '../images/player.png';
+import zombieImg from '../images/zombie1.png';
 import floorImg from '../images/floor.png';
 import Engine from './core/Engine';
 import Player from './core/Player';
