@@ -24,10 +24,6 @@ class Animation {
     this.#currentSequenceIndex = 0;
     this.#frameCounter = 0;
     this.#updated = false;
-
-    // populate these
-    // this.animationFrameX = 0;
-    // this.animationFrameY = 0;
   }
 
   get changed() {

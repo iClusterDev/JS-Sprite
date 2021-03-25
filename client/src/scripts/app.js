@@ -172,5 +172,5 @@ function init() {
       );
     }
   );
-  gameLoop.start();
+  // gameLoop.start();
 }
