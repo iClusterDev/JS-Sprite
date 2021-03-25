@@ -10,8 +10,14 @@ class SpriteSheet {
       throw new Error('SpriteSheet(): Missing required parameter!');
 
     this.spriteSheet = spriteSheet;
+
+    // FIXME
+    // decide what to do with these
+    // public or private?
+    // plus these are not even scaled
     this.frameW = spriteSheet.width / columns;
     this.frameH = spriteSheet.height / rows;
+
     this.#buffer = new OffscreenCanvas(
       this.frameW * scale,
       this.frameH * scale
