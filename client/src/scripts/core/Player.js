@@ -15,8 +15,14 @@ class Player extends Entity {
    * @param {*} config.animation: Object - (*optional) animation settings
    */
   constructor(playerConfig = {}) {
-    const { position, input, graphics, animation } = playerConfig;
+    const {
+      input = null,
+      position = null,
+      graphics = null,
+      animation = null,
+    } = playerConfig;
     if (!input) throw new Error('Player: input setting parameter is required!');
+
     super({ position, graphics, animation });
 
     this.controller = new Controller(input);

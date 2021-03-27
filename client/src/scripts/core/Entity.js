@@ -22,12 +22,16 @@ class Entity {
 
     this.position = position;
     this.graphics = new SpriteSheet(graphics);
-    this.animation = new Animation(animation);
 
-    this.currentFrame = this.graphics.getFrame(
-      this.animation.frame.column,
-      this.animation.frame.row
-    );
+    if (animation) {
+      this.animation = new Animation(animation);
+      this.currentFrame = this.graphics.getFrame(
+        this.animation.frame.column,
+        this.animation.frame.row
+      );
+    } else {
+      this.currentFrame = this.graphics.getFrame(0, 0);
+    }
   }
 
   get width() {
@@ -39,7 +43,7 @@ class Entity {
   }
 
   get frame() {
-    if (this.animation.changed) {
+    if (this.animation && this.animation.changed) {
       this.currentFrame = this.graphics.getFrame(
         this.animation.frame.column,
         this.animation.frame.row
