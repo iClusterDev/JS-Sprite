@@ -9,14 +9,10 @@ class SpriteSheet {
     if (!spriteSheet || !rows || !columns)
       throw new Error('SpriteSheet(): Missing required parameter!');
 
-    this.spriteSheet = spriteSheet;
-
-    // FIXME
-    // decide what to do with these
-    // public or private?
-    // plus these are not even scaled
-    this.frameW = spriteSheet.width / columns;
-    this.frameH = spriteSheet.height / rows;
+    // this.spriteSheet = spriteSheet;
+    this.frameSet = spriteSheet;
+    this.frameW = this.frameSet.width / columns;
+    this.frameH = this.frameSet.height / rows;
 
     this.#buffer = new OffscreenCanvas(
       this.frameW * scale,
@@ -36,7 +32,7 @@ class SpriteSheet {
   getFrame(column, row) {
     this.clearFrame();
     this.#buffer.drawImage(
-      this.spriteSheet,
+      this.frameSet,
       this.frameW * column,
       this.frameH * row,
       this.frameW,
