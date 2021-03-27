@@ -1,4 +1,4 @@
-const playerConfig = (spriteSheet) => {
+const heroConfig = (spriteSheet) => {
   return {
     position: {
       x: 100,
@@ -77,4 +77,4 @@ const playerConfig = (spriteSheet) => {
   };
 };
 
-export default playerConfig;
+export default heroConfig;

@@ -4,24 +4,6 @@ const zombieConfig = (spriteSheet) => {
       x: 100,
       y: 100,
     },
-    input: [
-      {
-        action: 'up',
-        code: 'KeyW',
-      },
-      {
-        action: 'right',
-        code: 'KeyD',
-      },
-      {
-        action: 'down',
-        code: 'KeyS',
-      },
-      {
-        action: 'left',
-        code: 'KeyA',
-      },
-    ],
     graphics: {
       spriteSheet: spriteSheet,
       columns: 3,

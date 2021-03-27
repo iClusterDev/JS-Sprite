@@ -9,7 +9,6 @@ class SpriteSheet {
     if (!spriteSheet || !rows || !columns)
       throw new Error('SpriteSheet(): Missing required parameter!');
 
-    // this.spriteSheet = spriteSheet;
     this.frameSet = spriteSheet;
     this.frameW = this.frameSet.width / columns;
     this.frameH = this.frameSet.height / rows;
@@ -18,6 +17,7 @@ class SpriteSheet {
       this.frameW * scale,
       this.frameH * scale
     ).getContext('2d');
+    this.#buffer.imageSmoothingEnabled = false;
   }
 
   clearFrame() {

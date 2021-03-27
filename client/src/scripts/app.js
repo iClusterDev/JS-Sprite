@@ -1,15 +1,16 @@
-import playerSrc from '../images/player.png';
+import heroSrc from '../images/hero.png';
 import zombieSrc from '../images/zombie.png';
-import playerConfig from './config/player';
+import heroConfig from './config/hero';
 import zombieConfig from './config/zombie';
 import Engine from './core/Engine';
-import Player from './core/Player';
+import Hero from './assets/Hero';
+import Zombie from './assets/Zombie';
 
 // ==========================================================
 // resource load
 // ==========================================================
 const images = [
-  { src: playerSrc, name: 'player' },
+  { src: heroSrc, name: 'hero' },
   { src: zombieSrc, name: 'zombie' },
 ];
 
@@ -33,9 +34,9 @@ const preloadImages = (imagesArray) => {
 };
 
 preloadImages(images).then((result) => {
-  const playerImg = result.find((item) => item.name === 'player');
+  const heroImg = result.find((item) => item.name === 'hero');
   const zombieImg = result.find((item) => item.name === 'zombie');
-  init(playerImg.image, zombieImg.image);
+  init(heroImg.image, zombieImg.image);
 });
 
 // ==========================================================
@@ -53,26 +54,26 @@ window.addEventListener('resize', () => {
 // ==========================================================
 // init
 // ==========================================================
-function init(playerSpriteSheet, zombieSpriteSheet) {
-  const player = new Player(playerConfig(playerSpriteSheet));
-  const zombie = new Player(zombieConfig(zombieSpriteSheet));
+function init(heroSpriteSheet, zombieSpriteSheet) {
+  const hero = new Hero(heroConfig(heroSpriteSheet));
+  const zombie = new Zombie(zombieConfig(zombieSpriteSheet));
   const gameLoop = new Engine(
     function update() {
-      player.update();
-      zombie.update();
+      hero.update();
+      zombie.update(ctx.canvas.width);
     },
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(
-        player.frame,
+        hero.frame,
         0,
         0,
-        player.frame.width,
-        player.frame.height,
-        player.position.x + 100,
-        player.position.y,
-        player.frame.width,
-        player.frame.height
+        hero.frame.width,
+        hero.frame.height,
+        hero.position.x + 100,
+        hero.position.y,
+        hero.frame.width,
+        hero.frame.height
       );
       ctx.drawImage(
         zombie.frame,
@@ -87,5 +88,5 @@ function init(playerSpriteSheet, zombieSpriteSheet) {
       );
     }
   );
-  gameLoop.start();
+  // gameLoop.start();
 }
