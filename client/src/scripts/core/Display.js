@@ -1,29 +1,40 @@
 class Display {
-  #fullscreen = false;
   #aspectRatio = null;
   #maxWidth = null;
-  #context = null;
+  #buffer = null;
   #canvas = null;
 
-  constructor(width = null, height = null) {
+  /**
+   * Game display (singleton)
+   *
+   * A DOM canvas object is required to initialize the game display.
+   * The DOM canvas id must be passed as parameter in the config object.
+   * Width & height are also required in order to keep
+   * the same aspect ratio on window "resize".
+   * The Display aspect ratio will be set based
+   * on the given width and height.
+   * By pressing "F" Display will go in fullscreen mode.
+   * @param {*} config
+   * @param {*} config.id - String: id of the DOM canvas element
+   * @param {*} config.width - Number: display width
+   * @param {*} config.height - Number: display height
+   */
+  constructor(config = {}) {
     if (Display.instance) {
       return Display.instance;
     } else {
-      this.#canvas = document.querySelector('#canvas');
+      const { width = null, height = null, id = null } = config;
+      if (!id || !width || !height)
+        throw new Error(`Display: missing required parameters!`);
 
-      if (!width || !height) this.#fullscreen = true;
-      if (this.#fullscreen) {
-        this.#canvas.width = window.innerWidth;
-        this.#canvas.height = window.innerHeight;
-      } else {
-        this.#canvas.width = width;
-        this.#canvas.height = height;
-        this.#aspectRatio = height / width;
-        this.#maxWidth = width;
-      }
+      this.#canvas = document.querySelector(id);
+      this.#canvas.width = width;
+      this.#canvas.height = height;
+      this.#maxWidth = width;
+      this.#aspectRatio = height / width;
 
-      this.#context = this.#canvas.getContext('2d');
-      this.#context.imageSmoothingEnabled = false;
+      this.#buffer = this.#canvas.getContext('2d');
+      this.#buffer.imageSmoothingEnabled = false;
 
       this.#init();
 
@@ -41,44 +52,58 @@ class Display {
   }
 
   #init() {
+    window.addEventListener('keypress', (event) => {
+      if (event.code === 'KeyF') {
+        this.#toggleFullscreen();
+      }
+    });
+
     window.addEventListener('resize', (e) => {
       e.preventDefault();
-      this.#resize();
+      if (!document.fullscreenElement) {
+        this.#resize();
+      }
     });
   }
 
-  #resize() {
-    if (this.#fullscreen) {
-      this.#canvas.width = window.innerWidth;
-      this.#canvas.height = window.innerHeight;
+  #toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      this.#canvas.requestFullscreen();
     } else {
-      const { innerWidth: width, innerHeight: height } = window;
-      let newWidth,
-        newHeight = 0;
-      if (height / width >= this.#aspectRatio) {
-        newWidth = width;
-        newHeight = width * this.#aspectRatio;
-      } else {
-        newWidth = height / this.#aspectRatio;
-        newHeight = height;
-      }
-
-      if (newWidth >= this.#maxWidth) {
-        this.#canvas.width = this.#maxWidth;
-        this.#canvas.height = this.#maxWidth * this.#aspectRatio;
-      } else {
-        this.#canvas.width = newWidth;
-        this.#canvas.height = newHeight;
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
       }
     }
   }
 
+  #resize() {
+    const { innerWidth: width, innerHeight: height } = window;
+    let newWidth,
+      newHeight = 0;
+    if (height / width >= this.#aspectRatio) {
+      newWidth = width;
+      newHeight = width * this.#aspectRatio;
+    } else {
+      newWidth = height / this.#aspectRatio;
+      newHeight = height;
+    }
+    if (newWidth >= this.#maxWidth) {
+      this.#canvas.width = this.#maxWidth;
+      this.#canvas.height = this.#maxWidth * this.#aspectRatio;
+    } else {
+      this.#canvas.width = newWidth;
+      this.#canvas.height = newHeight;
+    }
+  }
+
   clear() {
-    this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
+    this.#buffer.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
+    this.#buffer.fillStyle = 'red';
+    this.#buffer.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
   }
 
   render(frame, positionX, positionY) {
-    this.#context.drawImage(
+    this.#buffer.drawImage(
       frame,
       0,
       0,

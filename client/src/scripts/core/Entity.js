@@ -26,8 +26,8 @@ class Entity {
     if (animation) {
       this.animation = new Animation(animation);
       this.currentFrame = this.graphics.getFrame(
-        this.animation.frame.column,
-        this.animation.frame.row
+        this.animation.frameIndex.x,
+        this.animation.frameIndex.y
       );
     } else {
       // FIXME
@@ -47,10 +47,10 @@ class Entity {
   }
 
   get frame() {
-    if (this.animation && this.animation.changed) {
+    if (this.animation && this.animation.frameChanged) {
       this.currentFrame = this.graphics.getFrame(
-        this.animation.frame.column,
-        this.animation.frame.row
+        this.animation.frameIndex.x,
+        this.animation.frameIndex.y
       );
     }
     return this.currentFrame;

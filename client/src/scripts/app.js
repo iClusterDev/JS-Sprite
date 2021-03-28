@@ -49,7 +49,11 @@ preloadImages(images).then((result) => {
 // init
 // ==========================================================
 function init(heroSpriteSheet, zombieSpriteSheet, dwarfSpriteSheet) {
-  const display = new Display(800, 600);
+  const display = new Display({
+    id: 'canvas',
+    width: 1000,
+    height: 800,
+  });
 
   const hero = new Hero(heroConfig(heroSpriteSheet));
   const dwarf = new Dwarf(dwarfConfig(dwarfSpriteSheet));
@@ -67,5 +71,5 @@ function init(heroSpriteSheet, zombieSpriteSheet, dwarfSpriteSheet) {
       display.render(zombie.frame, zombie.position.x, zombie.position.y);
     }
   );
-  // gameLoop.start();
+  gameLoop.start();
 }

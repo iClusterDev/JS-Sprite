@@ -1,7 +1,5 @@
 // ==========================================================
 // animation
-// FIXME
-// set props animationFrameX/Y
 // ==========================================================
 class Animation {
   #updated;
@@ -26,18 +24,18 @@ class Animation {
     this.#updated = false;
   }
 
-  get changed() {
+  get frameChanged() {
     return this.#updated;
   }
 
-  get action() {
+  get frameAction() {
     return this.#currentAnimation.action;
   }
 
-  get frame() {
+  get frameIndex() {
     return {
-      row: this.#currentAnimation.cycle,
-      column: this.#currentAnimation.sequence[this.#currentSequenceIndex],
+      x: this.#currentAnimation.sequence[this.#currentSequenceIndex],
+      y: this.#currentAnimation.cycle,
     };
   }
 
