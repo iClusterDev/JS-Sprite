@@ -8,7 +8,7 @@ const dwarfConfig = (spriteSheet) => {
       spriteSheet: spriteSheet,
       columns: 1,
       rows: 1,
-      scale: 4,
+      scale: 3,
     },
   };
 };

@@ -13,7 +13,8 @@ class Zombie extends Entity {
   }
 
   update(displayWidth, displayHeight) {
-    if (this.position.x >= displayWidth - this.width) {
+    console.log('DEBUG ~ update ~ this.position.x', this.width);
+    if (this.position.x > displayWidth - this.width) {
       this.reverseDirection();
     } else if (this.position.x <= 0) {
       this.reverseDirection();

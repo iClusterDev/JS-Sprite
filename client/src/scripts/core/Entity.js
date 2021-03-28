@@ -30,6 +30,10 @@ class Entity {
         this.animation.frame.row
       );
     } else {
+      // FIXME
+      // this could be better by
+      // allowing a massive shared spritesheet
+      // especially for level design?
       this.currentFrame = this.graphics.getFrame(0, 0);
     }
   }

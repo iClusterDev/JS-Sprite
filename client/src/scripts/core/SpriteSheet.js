@@ -1,23 +1,37 @@
 // ==========================================================
 // spritesheet
+// FIXME
+// fix for frameX/Y
 // ==========================================================
 class SpriteSheet {
+  #DEBUG = false;
   #buffer;
+  #sourceFrameW;
+  #sourceFrameH;
+  #sourceFrameSet;
 
   constructor(config = {}) {
     const { spriteSheet, rows, columns, scale = 1 } = config;
     if (!spriteSheet || !rows || !columns)
       throw new Error('SpriteSheet(): Missing required parameter!');
 
-    this.frameSet = spriteSheet;
-    this.frameW = this.frameSet.width / columns;
-    this.frameH = this.frameSet.height / rows;
+    this.#sourceFrameSet = spriteSheet;
+    this.#sourceFrameW = this.#sourceFrameSet.width / columns;
+    this.#sourceFrameH = this.#sourceFrameSet.height / rows;
 
     this.#buffer = new OffscreenCanvas(
-      this.frameW * scale,
-      this.frameH * scale
+      (this.#sourceFrameSet.width / columns) * scale,
+      (this.#sourceFrameSet.height / rows) * scale
     ).getContext('2d');
     this.#buffer.imageSmoothingEnabled = false;
+  }
+
+  get frameW() {
+    return this.#buffer.canvas.width;
+  }
+
+  get frameH() {
+    return this.#buffer.canvas.height;
   }
 
   clearFrame() {
@@ -31,12 +45,21 @@ class SpriteSheet {
 
   getFrame(column, row) {
     this.clearFrame();
+
+    this.#buffer.fillStyle = 'green';
+    this.#buffer.fillRect(
+      0,
+      0,
+      this.#buffer.canvas.width,
+      this.#buffer.canvas.height
+    );
+
     this.#buffer.drawImage(
-      this.frameSet,
-      this.frameW * column,
-      this.frameH * row,
-      this.frameW,
-      this.frameH,
+      this.#sourceFrameSet,
+      this.#sourceFrameW * column,
+      this.#sourceFrameH * row,
+      this.#sourceFrameW,
+      this.#sourceFrameH,
       0,
       0,
       this.#buffer.canvas.width,
@@ -45,5 +68,61 @@ class SpriteSheet {
     return this.#buffer.canvas;
   }
 }
+
+// class SpriteSheet {
+//   #buffer;
+
+//   constructor(config = {}) {
+//     const { spriteSheet, rows, columns, scale = 1 } = config;
+//     if (!spriteSheet || !rows || !columns)
+//       throw new Error('SpriteSheet(): Missing required parameter!');
+
+//     this.frameSet = spriteSheet;
+//     this.frameW = this.frameSet.width / columns;
+//     this.frameH = this.frameSet.height / rows;
+
+//     this.#buffer = new OffscreenCanvas(
+//       this.frameW * scale,
+//       this.frameH * scale
+//     ).getContext('2d');
+//     this.#buffer.imageSmoothingEnabled = false;
+//   }
+
+//   clearFrame() {
+//     this.#buffer.clearRect(
+//       0,
+//       0,
+//       this.#buffer.canvas.width,
+//       this.#buffer.canvas.height
+//     );
+//   }
+
+//   getFrame(column, row) {
+//     this.clearFrame();
+
+//     this.#buffer.fillStyle = 'green';
+//     this.#buffer.fillRect(
+//       0,
+//       0,
+//       // this.#buffer.canvas.width,
+//       // this.#buffer.canvas.height
+//       this.frameW,
+//       this.frameH
+//     );
+
+//     this.#buffer.drawImage(
+//       this.frameSet,
+//       this.frameW * column,
+//       this.frameH * row,
+//       this.frameW,
+//       this.frameH,
+//       0,
+//       0,
+//       this.#buffer.canvas.width,
+//       this.#buffer.canvas.height
+//     );
+//     return this.#buffer.canvas;
+//   }
+// }
 
 export default SpriteSheet;
