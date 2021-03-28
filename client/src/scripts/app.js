@@ -1,22 +1,20 @@
-import heroSrc from '../images/hero.png';
-import dwarfSrc from '../images/dwarf.png';
-import zombieSrc from '../images/zombie.png';
-import heroConfig from './config/hero';
-import dwarfConfig from './config/dwarf';
-import zombieConfig from './config/zombie';
-import Display from './core/Display';
 import Engine from './core/Engine';
-import Hero from './assets/Hero';
-import Dwarf from './assets/Dwarf';
-import Zombie from './assets/Zombie';
+import Display from './core/Display';
+
+import crossSrc from '../images/cross.png';
+import squareSrc from '../images/square.png';
+import crossConfig from './config/cross';
+import squareConfig from './config/square';
+
+import Cross from './assets/Cross';
+import Square from './assets/Square';
 
 // ==========================================================
 // resource load
 // ==========================================================
 const images = [
-  { src: heroSrc, name: 'hero' },
-  { src: dwarfSrc, name: 'dwarf' },
-  { src: zombieSrc, name: 'zombie' },
+  { src: crossSrc, name: 'cross' },
+  { src: squareSrc, name: 'square' },
 ];
 
 const preloadImage = (src, name) => {
@@ -39,36 +37,32 @@ const preloadImages = (imagesArray) => {
 };
 
 preloadImages(images).then((result) => {
-  const heroImg = result.find((item) => item.name === 'hero');
-  const dwarfImg = result.find((item) => item.name === 'dwarf');
-  const zombieImg = result.find((item) => item.name === 'zombie');
-  init(heroImg.image, zombieImg.image, dwarfImg.image);
+  const crossImg = result.find((item) => item.name === 'cross');
+  const squareImg = result.find((item) => item.name === 'square');
+  init(crossImg.image, squareImg.image);
 });
 
 // ==========================================================
 // init
 // ==========================================================
-function init(heroSpriteSheet, zombieSpriteSheet, dwarfSpriteSheet) {
+function init(crossSpriteSheet, squareSpriteSheet) {
   const display = new Display({
     id: 'canvas',
     width: 1000,
     height: 800,
   });
 
-  const hero = new Hero(heroConfig(heroSpriteSheet));
-  const dwarf = new Dwarf(dwarfConfig(dwarfSpriteSheet));
-  const zombie = new Zombie(zombieConfig(zombieSpriteSheet));
+  const cross = new Cross(crossConfig(crossSpriteSheet));
+  const square = new Square(squareConfig(squareSpriteSheet));
 
   const gameLoop = new Engine(
     function update() {
-      hero.update();
-      zombie.update(display.width);
+      display.clear();
+      cross.update();
     },
     function render() {
-      display.clear();
-      display.render(hero.frame, hero.position.x, hero.position.y);
-      display.render(dwarf.frame, dwarf.position.x, dwarf.position.y);
-      display.render(zombie.frame, zombie.position.x, zombie.position.y);
+      display.render(cross.frame, cross.position.x, cross.position.y);
+      display.render(square.frame, square.position.x, square.position.y);
     }
   );
   gameLoop.start();

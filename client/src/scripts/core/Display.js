@@ -98,8 +98,6 @@ class Display {
 
   clear() {
     this.#buffer.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
-    this.#buffer.fillStyle = 'red';
-    this.#buffer.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
   }
 
   render(frame, positionX, positionY) {
