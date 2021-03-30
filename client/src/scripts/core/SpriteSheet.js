@@ -1,40 +1,40 @@
 // ==========================================================
 // spritesheet
 // FIXME
-// fix for frameX/Y
+// fix for spriteX/Y
 // ==========================================================
 class SpriteSheet {
   // #DEBUG = false;
   #buffer;
-  #sourceFrameW;
-  #sourceFrameH;
-  #sourceFrameSet;
+  #sourceSpriteW;
+  #sourceSpriteH;
+  #sourceSpriteSet;
 
   constructor(config = {}) {
     const { spriteSheet, rows, columns, scale = 1 } = config;
     if (!spriteSheet || !rows || !columns)
       throw new Error('SpriteSheet(): Missing required parameter!');
 
-    this.#sourceFrameSet = spriteSheet;
-    this.#sourceFrameW = this.#sourceFrameSet.width / columns;
-    this.#sourceFrameH = this.#sourceFrameSet.height / rows;
+    this.#sourceSpriteSet = spriteSheet;
+    this.#sourceSpriteW = this.#sourceSpriteSet.width / columns;
+    this.#sourceSpriteH = this.#sourceSpriteSet.height / rows;
 
     this.#buffer = new OffscreenCanvas(
-      (this.#sourceFrameSet.width / columns) * scale,
-      (this.#sourceFrameSet.height / rows) * scale
+      (this.#sourceSpriteSet.width / columns) * scale,
+      (this.#sourceSpriteSet.height / rows) * scale
     ).getContext('2d');
     this.#buffer.imageSmoothingEnabled = false;
   }
 
-  get frameW() {
+  get spriteW() {
     return this.#buffer.canvas.width;
   }
 
-  get frameH() {
+  get spriteH() {
     return this.#buffer.canvas.height;
   }
 
-  clearFrame() {
+  #clearSprite() {
     this.#buffer.clearRect(
       0,
       0,
@@ -43,8 +43,8 @@ class SpriteSheet {
     );
   }
 
-  getFrame(column, row) {
-    this.clearFrame();
+  getSprite(column, row) {
+    this.#clearSprite();
 
     // this.#buffer.fillStyle = 'green';
     // this.#buffer.fillRect(
@@ -55,11 +55,11 @@ class SpriteSheet {
     // );
 
     this.#buffer.drawImage(
-      this.#sourceFrameSet,
-      this.#sourceFrameW * column,
-      this.#sourceFrameH * row,
-      this.#sourceFrameW,
-      this.#sourceFrameH,
+      this.#sourceSpriteSet,
+      this.#sourceSpriteW * column,
+      this.#sourceSpriteH * row,
+      this.#sourceSpriteW,
+      this.#sourceSpriteH,
       0,
       0,
       this.#buffer.canvas.width,

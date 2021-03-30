@@ -14,18 +14,24 @@ class Entity {
    * @param {*} config.animation: Object - (*optional) animation settings
    */
   constructor(config = {}) {
-    const { position = null, graphics = null, animation = null } = config;
-    if (!position || !graphics)
+    const {
+      type = null,
+      position = null,
+      graphics = null,
+      animation = null,
+    } = config;
+    if (!type || !position || !graphics)
       throw new Error(
-        'Entity: both position and graphics parameters are required!'
+        'Entity: type, position and graphics parameters are required!'
       );
 
+    this.type = type;
     this.position = position;
     this.graphics = new SpriteSheet(graphics);
 
     if (animation) {
       this.animation = new Animation(animation);
-      this.currentFrame = this.graphics.getFrame(
+      this.currentSprite = this.graphics.getSprite(
         this.animation.frameIndex.x,
         this.animation.frameIndex.y
       );
@@ -34,26 +40,26 @@ class Entity {
       // this could be better by
       // allowing a massive shared spritesheet
       // especially for level design?
-      this.currentFrame = this.graphics.getFrame(0, 0);
+      this.currentSprite = this.graphics.getSprite(0, 0);
     }
   }
 
   get width() {
-    return this.graphics.frameW;
+    return this.graphics.spriteW;
   }
 
   get height() {
-    return this.graphics.frameW;
+    return this.graphics.spriteW;
   }
 
-  get frame() {
+  get sprite() {
     if (this.animation && this.animation.frameChanged) {
-      this.currentFrame = this.graphics.getFrame(
+      this.currentSprite = this.graphics.getSprite(
         this.animation.frameIndex.x,
         this.animation.frameIndex.y
       );
     }
-    return this.currentFrame;
+    return this.currentSprite;
   }
 }
 

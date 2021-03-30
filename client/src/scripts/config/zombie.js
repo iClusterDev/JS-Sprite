@@ -1,5 +1,6 @@
 const zombieConfig = (spriteSheet) => {
   return {
+    type: 'dynamic',
     position: {
       x: 100,
       y: 100,

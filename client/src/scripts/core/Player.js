@@ -16,6 +16,7 @@ class Player extends Entity {
    */
   constructor(playerConfig = {}) {
     const {
+      type = null,
       input = null,
       position = null,
       graphics = null,
@@ -23,7 +24,7 @@ class Player extends Entity {
     } = playerConfig;
     if (!input) throw new Error('Player: input setting parameter is required!');
 
-    super({ position, graphics, animation });
+    super({ type, position, graphics, animation });
 
     this.controller = new Controller(input);
   }

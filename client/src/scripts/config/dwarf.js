@@ -1,5 +1,6 @@
 const dwarfConfig = (spriteSheet) => {
   return {
+    type: 'dynamic',
     position: {
       x: 300,
       y: 400,

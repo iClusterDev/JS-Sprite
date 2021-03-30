@@ -1,8 +1,9 @@
 const crossConfig = (spriteSheet) => {
   return {
+    type: 'dynamic',
     position: {
-      x: 100,
-      y: 100,
+      x: 0,
+      y: 0,
     },
     graphics: {
       spriteSheet: spriteSheet,

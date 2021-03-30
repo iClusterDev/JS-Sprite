@@ -1,3 +1,4 @@
+import Scene from './core/Scene';
 import Engine from './core/Engine';
 import Display from './core/Display';
 
@@ -55,15 +56,20 @@ function init(crossSpriteSheet, squareSpriteSheet) {
   const cross = new Cross(crossConfig(crossSpriteSheet));
   const square = new Square(squareConfig(squareSpriteSheet));
 
-  const gameLoop = new Engine(
-    function update() {
-      display.clear();
-      cross.update();
-    },
-    function render() {
-      display.render(cross.frame, cross.position.x, cross.position.y);
-      display.render(square.frame, square.position.x, square.position.y);
-    }
-  );
-  gameLoop.start();
+  const sceneConfig = {
+    container: display,
+    layers: {},
+  };
+  const scene = new Scene(sceneConfig);
+
+  // const gameLoop = new Engine(
+  //   function update() {
+  //     display.clear();
+  //     scene.update();
+  //   },
+  //   function render() {
+  //     display.render(scene.sprite, 0, 0);
+  //   }
+  // );
+  // gameLoop.start();
 }

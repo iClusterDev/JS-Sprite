@@ -1,8 +1,9 @@
 const squareConfig = (spriteSheet) => {
   return {
+    type: 'static',
     position: {
       x: 300,
-      y: 400,
+      y: 0,
     },
     graphics: {
       spriteSheet: spriteSheet,
