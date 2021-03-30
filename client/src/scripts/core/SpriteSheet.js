@@ -4,7 +4,6 @@
 // fix for spriteX/Y
 // ==========================================================
 class SpriteSheet {
-  // #DEBUG = false;
   #buffer;
   #sourceSpriteW;
   #sourceSpriteH;

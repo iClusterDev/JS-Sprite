@@ -18,18 +18,29 @@ class Display {
    * @param {*} config.id - String: id of the DOM canvas element
    * @param {*} config.width - Number: display width
    * @param {*} config.height - Number: display height
+   * @param {*} config.background - String: display background color
    */
   constructor(config = {}) {
     if (Display.instance) {
       return Display.instance;
     } else {
-      const { width = null, height = null, id = null } = config;
+      const {
+        id = null,
+        width = null,
+        height = null,
+        background = null,
+      } = config;
       if (!id || !width || !height)
         throw new Error(`Display: missing required parameters!`);
 
       this.#canvas = document.querySelector(id);
       this.#canvas.width = width;
       this.#canvas.height = height;
+
+      if (background) {
+        this.#canvas.style = `background: ${background}`;
+      }
+
       this.#maxWidth = width;
       this.#aspectRatio = height / width;
 
