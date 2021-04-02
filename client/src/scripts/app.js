@@ -63,7 +63,7 @@ const levelConfig = (spriteSheet) => {
     tiles: [
       {
         name: 'empty',
-        symbol: '.',
+        symbol: '-',
       },
       {
         name: 'yellowBrick',
@@ -89,19 +89,43 @@ const levelConfig = (spriteSheet) => {
         column: 0,
         row: 1,
       },
+      {
+        name: 'ground1',
+        symbol: '1',
+        column: 1,
+        row: 1,
+      },
+      {
+        name: 'ground2',
+        symbol: '2',
+        column: 0,
+        row: 2,
+      },
+      {
+        name: 'ground3',
+        symbol: '3',
+        column: 0,
+        row: 2,
+      },
+      {
+        name: 'ground4',
+        symbol: '4',
+        column: 1,
+        row: 2,
+      },
     ],
-    map: `
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-      . Y . Y . Y Y Y . Y . Y .
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-      . . . . . . . . . . . . .
-    `,
+    map: [
+      ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ['-', '-', '-', '-', '-', '-', 'Y', '-', '-', '-', '-', '-', '-'],
+      ['-', '-', '-', '-', '-', 'Y', 'Y', 'Y', '-', '-', '-', '-', '-'],
+      ['-', 'R', '-', 'B', 'B', 'G', 'Y', 'G', 'B', 'B', '-', 'R', '-'],
+      ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+      ['1', '3', '2', '4', '2', '1', '3', '2', '3', '1', '4', '2', '3'],
+    ],
   };
 };
 
@@ -121,33 +145,32 @@ class Level {
       throw new Error('Level: missing required parameters!');
 
     this.#updated = false;
-    // this.#buffer = new OffscreenCanvas(width, height).getContext('2d');
-    // this.#buffer.imageSmoothingEnabled = false;
     this.graphics = new SpriteSheet(graphics);
 
-    const tile = this.graphics.getSprite(0, 1);
-    // this.#buffer.drawImage(
-    //   tile,
-    //   0,
-    //   0,
-    //   tile.width,
-    //   tile.height,
-    //   0,
-    //   0,
-    //   this.#buffer.canvas.width,
-    //   this.#buffer.canvas.height
-    // );
+    // FIXME
+    // in map all the column must have
+    // the same size
+    this.columns = map[0].length;
+    this.rows = map.length;
+    this.#buffer = new OffscreenCanvas(
+      this.graphics.spriteW * this.columns,
+      this.graphics.spriteH * this.rows
+    ).getContext('2d');
+    this.#buffer.imageSmoothingEnabled = false;
 
-    // for (let i = 0; i < map.length; i++) {
-    //   if (map.charAt(i) !== ' ') {
-    //     const symbol = map.charAt(i);
-    //     console.log('DEBUG ~ constructor ~ symbol', symbol);
-    //   }
-    // }
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < map[r].length; c++) {
+        const tile = tiles.find((tile) => tile.symbol === map[r][c]);
+        if (tile.name !== 'empty') {
+          const sprite = this.graphics.getSprite(tile.column, tile.row);
+          this.#buffer.drawImage(sprite, c * sprite.width, r * sprite.height);
+        }
+      }
+    }
   }
 
-  get buffer() {
-    return this.graphics.getSprite(0, 0);
+  get frame() {
+    return this.#buffer.canvas;
   }
 }
 
@@ -163,8 +186,6 @@ function init(ballSpriteSheet, paddleSpriteSheet, levelSpriteSheet) {
   });
 
   const level = new Level(levelConfig(levelSpriteSheet));
-  // console.log('DEBUG ~ init ~ level', level.buffer);
-
   const ball = new Ball(ballConfig(ballSpriteSheet));
   const paddle = new Paddle(paddleConfig(paddleSpriteSheet));
 
@@ -175,11 +196,7 @@ function init(ballSpriteSheet, paddleSpriteSheet, levelSpriteSheet) {
       paddle.update(display.width, display.height);
     },
     function render() {
-      display.render(level.buffer, level.buffer.width * 0, 0);
-      display.render(level.buffer, level.buffer.width * 1, 0);
-      display.render(level.buffer, level.buffer.width * 2, 0);
-      display.render(level.buffer, level.buffer.width * 3, 0);
-      display.render(level.buffer, level.buffer.width * 4, 0);
+      display.render(level.frame, 0, 0);
       display.render(ball.sprite, ball.position.x, ball.position.y);
       display.render(paddle.sprite, paddle.position.x, paddle.position.y);
     }
