@@ -14,11 +14,17 @@ class Display {
    * The Display aspect ratio will be set based
    * on the given width and height.
    * By pressing "F" Display will go in fullscreen mode.
+   *
    * @param {*} config
    * @param {*} config.id - String: id of the DOM canvas element
    * @param {*} config.width - Number: display width
    * @param {*} config.height - Number: display height
    * @param {*} config.background - String: display background color
+   *
+   * @getter width
+   * @getter height
+   * @method clear()
+   * @method render()
    */
   constructor(config = {}) {
     if (Display.instance) {
