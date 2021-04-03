@@ -130,6 +130,10 @@ class Display {
       frame.height
     );
   }
+
+  get debugCtx() {
+    return this.#buffer;
+  }
 }
 
 export default Display;
