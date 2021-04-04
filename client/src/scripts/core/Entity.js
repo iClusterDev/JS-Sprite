@@ -15,17 +15,15 @@ class Entity {
    */
   constructor(config = {}) {
     const {
-      type = null,
+      // type = null,
       position = null,
       graphics = null,
       animation = null,
     } = config;
-    if (!type || !position || !graphics)
-      throw new Error(
-        'Entity: type, position and graphics parameters are required!'
-      );
+    if (!position || !graphics)
+      throw new Error('Entity: position and graphics parameters are required!');
 
-    this.type = type;
+    // this.type = type;
     this.position = position;
     this.graphics = new SpriteSheet(graphics);
 
