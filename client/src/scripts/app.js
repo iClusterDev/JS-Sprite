@@ -1,15 +1,16 @@
 import Buffer from './core/Buffer';
-import Player from './core/Player';
 import Engine from './core/Engine';
 import Display from './core/Display';
 import Resource from './core/Resource';
 import Graphics from './core/Graphics';
-import Controller from './core/Controller';
+
+import Hero from './assets/Hero';
 
 import tileSpriteSheetSrc from '../images/tile.png';
 
 const GAME = {
   world: {
+    unit: 32,
     rows: 16,
     columns: 60,
     map: [
@@ -23,86 +24,20 @@ const GAME = {
       '............###########...........................#.#.......',
       '..........#############...######............................',
       '........###############...######............................',
-      '#####.############################..########################',
-      '#####.###########################..##.......................',
-      '#####.##########################..##........................',
-      '#####.............................##.........................',
+      '#####.##############################....####################',
+      '#####.############################....##....................',
+      '#####.##########################....##......................',
+      '#####.............................##........................',
       '#####...........................##..........................',
       '################################............................',
     ],
   },
 };
 
-class Hero extends Player {
-  constructor(config = {}) {
-    super(config);
-    this.updated = false;
-    this.speed = {
-      x: 0.25,
-      y: 0.25,
-    };
-  }
-
-  update(elapsedTime, minPositionX, minPositionY, worldWidth, worldHeight) {
-    // update position
-    let deltaX = 0;
-    let deltaY = 0;
-    if (this.controller.right.isActive) {
-      deltaX -= this.speed.x * elapsedTime;
-    } else if (this.controller.left.isActive) {
-      deltaX += this.speed.x * elapsedTime;
-    }
-
-    if (this.controller.up.isActive) {
-      deltaY -= this.speed.y * elapsedTime;
-    } else if (this.controller.down.isActive) {
-      deltaY += this.speed.y * elapsedTime;
-    }
-
-    if (deltaX !== 0 || deltaY !== 0) {
-      let newPositionX = this.position.x + deltaX;
-      let newPositionY = this.position.y + deltaY;
-
-      // ...and here you check for out of bounds
-      let maxPositionX = worldWidth - this.width;
-      let maxPositionY = worldHeight - this.height;
-
-      if (newPositionX < minPositionX) {
-        this.position.x = minPositionX;
-      } else if (newPositionX > maxPositionX) {
-        this.position.x = maxPositionX;
-      } else {
-        this.position.x += deltaX;
-      }
-
-      if (newPositionY < minPositionY) {
-        this.position.y = minPositionY;
-      } else if (newPositionY > maxPositionY) {
-        this.position.y = maxPositionY;
-      } else {
-        this.position.y += deltaY;
-      }
-
-      // ...and here you check for collision
-
-      this.updated = true;
-    }
-  }
-}
-
 export default () => {
   const IMAGES = [{ src: tileSpriteSheetSrc, name: 'tileSpriteSheet' }];
 
   Resource.preloadImages(IMAGES).then(() => {
-    // display setup
-    const displayW = (GAME.world.columns / 2) * 32;
-    const displayH = GAME.world.rows * 32;
-    const display = new Display({
-      id: 'canvas',
-      width: displayW,
-      height: displayH,
-    });
-
     // sprites setup
     const tileSpriteSheet = new Graphics({
       spriteSheet: Resource.getImage('tileSpriteSheet'),
@@ -111,11 +46,20 @@ export default () => {
       scale: 2,
     });
 
+    // display setup
+    const displayW = (GAME.world.columns / 2) * GAME.world.unit;
+    const displayH = GAME.world.rows * GAME.world.unit;
+    const display = new Display({
+      id: 'canvas',
+      width: displayW,
+      height: displayH,
+    });
+
     // player setup
     const hero = new Hero({
       position: {
-        x: 0,
-        y: 0,
+        x: display.width / 2,
+        y: display.height / 2,
       },
       graphics: {
         spriteSheet: tileSpriteSheet.getSprite(0, 1),
@@ -132,7 +76,10 @@ export default () => {
     });
 
     // level setup
-    const level = new Buffer(GAME.world.columns * 32, GAME.world.rows * 32);
+    const level = new Buffer(
+      GAME.world.columns * GAME.world.unit,
+      GAME.world.rows * GAME.world.unit
+    );
     for (let row = 0; row < GAME.world.map.length; row++) {
       for (let column = 0; column < GAME.world.map[row].length; column++) {
         const spriteRow = null;
@@ -207,8 +154,8 @@ export default () => {
           elapsedTime,
           0,
           0,
-          GAME.world.columns * 32,
-          GAME.world.rows * 32
+          GAME.world.columns * GAME.world.unit,
+          GAME.world.rows * GAME.world.unit
         );
       },
       function render() {
