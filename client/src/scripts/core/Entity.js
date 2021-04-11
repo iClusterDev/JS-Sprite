@@ -2,6 +2,10 @@ import Graphics from './Graphics';
 import Animation from './Animation';
 
 class Entity {
+  #graphics;
+  #animation;
+  #currentSprite;
+
   /**
    * Game object
    *
@@ -14,50 +18,44 @@ class Entity {
    * @param {*} config.animation: Object - (*optional) animation settings
    */
   constructor(config = {}) {
-    const {
-      // type = null,
-      position = null,
-      graphics = null,
-      animation = null,
-    } = config;
+    const { position = null, graphics = null, animation = null } = config;
     if (!position || !graphics)
       throw new Error('Entity: position and graphics parameters are required!');
 
-    // this.type = type;
     this.position = position;
-    this.graphics = new Graphics(graphics);
+    this.#graphics = new Graphics(graphics);
 
     if (animation) {
-      this.animation = new Animation(animation);
-      this.currentSprite = this.graphics.getSprite(
-        this.animation.frameIndex.x,
-        this.animation.frameIndex.y
+      this.#animation = new Animation(animation);
+      this.#currentSprite = this.#graphics.sprite(
+        this.#animation.frameIndex.x,
+        this.#animation.frameIndex.y
       );
     } else {
       // FIXME
       // this could be better by
       // allowing a massive shared spritesheet
       // especially for level design?
-      this.currentSprite = this.graphics.getSprite(0, 0);
+      this.#currentSprite = this.#graphics.sprite(0, 0);
     }
   }
 
   get width() {
-    return this.graphics.spriteW;
+    return this.#graphics.spriteW;
   }
 
   get height() {
-    return this.graphics.spriteW;
+    return this.#graphics.spriteW;
   }
 
   get sprite() {
-    if (this.animation && this.animation.frameChanged) {
-      this.currentSprite = this.graphics.getSprite(
-        this.animation.frameIndex.x,
-        this.animation.frameIndex.y
+    if (this.#animation && this.#animation.frameChanged) {
+      this.#currentSprite = this.#graphics.sprite(
+        this.#animation.frameIndex.x,
+        this.#animation.frameIndex.y
       );
     }
-    return this.currentSprite;
+    return this.#currentSprite;
   }
 }
 

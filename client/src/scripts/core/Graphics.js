@@ -29,7 +29,7 @@ class Graphics {
     return this.#buffer.height;
   }
 
-  getSprite(column, row) {
+  sprite(column, row) {
     this.#buffer.clear();
     this.#buffer.draw(
       this.#sourceSpriteSheet,

@@ -1,6 +1,19 @@
 class Buffer {
   #buffer;
 
+  /**
+   * Game Buffer
+   *
+   * Generic offscreen canvas
+   * @param {*} width - Number: canvas width
+   * @param {*} height - Number: canvas height
+   *
+   * @getter image
+   * @getter width
+   * @getter height
+   * @method clear()
+   * @method draw()
+   */
   constructor(width = 0, height = 0) {
     if (width === 0 || height === 0)
       throw new Error(`Buffer: width and height are required!`);
@@ -23,16 +36,6 @@ class Buffer {
 
   clear() {
     this.#buffer.clearRect(
-      0,
-      0,
-      this.#buffer.canvas.width,
-      this.#buffer.canvas.height
-    );
-  }
-
-  fill(color) {
-    this.#buffer.fillStyle = color;
-    this.#buffer.fillRect(
       0,
       0,
       this.#buffer.canvas.width,
