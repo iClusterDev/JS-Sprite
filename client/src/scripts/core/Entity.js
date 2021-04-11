@@ -1,5 +1,5 @@
+import Graphics from './Graphics';
 import Animation from './Animation';
-import SpriteSheet from './SpriteSheet';
 
 class Entity {
   /**
@@ -25,7 +25,7 @@ class Entity {
 
     // this.type = type;
     this.position = position;
-    this.graphics = new SpriteSheet(graphics);
+    this.graphics = new Graphics(graphics);
 
     if (animation) {
       this.animation = new Animation(animation);

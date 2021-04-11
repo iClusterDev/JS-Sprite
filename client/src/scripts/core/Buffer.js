@@ -30,6 +30,16 @@ class Buffer {
     );
   }
 
+  fill(color) {
+    this.#buffer.fillStyle = color;
+    this.#buffer.fillRect(
+      0,
+      0,
+      this.#buffer.canvas.width,
+      this.#buffer.canvas.height
+    );
+  }
+
   draw(
     source,
     sourceX,
