@@ -21,6 +21,11 @@ class Entity {
    * @param {*} config.position: Object - x/y coordinates on canvas
    * @param {*} config.graphics: Object - spritesheet settings
    * @param {*} config.animation: Object - (*optional) animation settings
+   *
+   * @getter controller
+   * @getter position
+   * @getter sprite
+   * @method animate()
    */
   constructor(config = {}) {
     const {
