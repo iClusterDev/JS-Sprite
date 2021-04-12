@@ -14,7 +14,7 @@ class Controller {
   #keyMap;
 
   /**
-   * Game controller (Singleton).
+   * Game controller.
    *
    * Handles the input state.
    * The keyMap array must be given as constructor parameter.
@@ -25,20 +25,13 @@ class Controller {
    * @props action.isDown
    */
   constructor(keyMap = []) {
-    if (Controller.instance) {
-      return Controller.instance;
-    } else {
-      Controller.instance = this;
-      this.#keyMap = keyMap;
-      this.#keyMap.forEach((keyItem) => {
-        const { action } = keyItem;
-        this[action] = new KeyInput();
-      });
+    this.#keyMap = keyMap;
+    this.#keyMap.forEach((keyItem) => {
+      const { action } = keyItem;
+      this[action] = new KeyInput();
+    });
 
-      this.#init();
-
-      return this;
-    }
+    this.#init();
   }
 
   #init() {
