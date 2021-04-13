@@ -4,7 +4,12 @@ class Buffer {
   /**
    * Game Buffer
    *
-   * Generic offscreen canvas
+   * Generic offscreen canvas.
+   * Width and Height are required parameters;
+   * if the id parameter is padssed in, the canvas
+   * will be taken from the DOM
+   *
+   * @param {*} id - (*optional) String: DOM canvas element id
    * @param {*} width - Number: canvas width
    * @param {*} height - Number: canvas height
    *
@@ -14,15 +19,24 @@ class Buffer {
    * @method clear()
    * @method draw()
    */
-  constructor(width = 0, height = 0) {
+  constructor(width = 0, height = 0, id = null) {
     if (width === 0 || height === 0)
       throw new Error(`Buffer: width and height are required!`);
 
-    this.#buffer = new OffscreenCanvas(width, height).getContext('2d');
+    if (id) {
+      // grab from DOM
+      const canvas = document.querySelector(id);
+      canvas.width = width;
+      canvas.height = height;
+      this.#buffer = canvas.getContext('2d');
+    } else {
+      this.#buffer = new OffscreenCanvas(width, height).getContext('2d');
+    }
+
     this.#buffer.imageSmoothingEnabled = false;
   }
 
-  get image() {
+  get canvas() {
     return this.#buffer.canvas;
   }
 

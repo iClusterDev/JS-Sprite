@@ -38,7 +38,7 @@ class Graphics {
       this.#sourceSpriteW,
       this.#sourceSpriteH
     );
-    return this.#buffer.image;
+    return this.#buffer.canvas;
   }
 }
 

@@ -42,9 +42,20 @@ export default () => {
         hero.update(elapsedTime, 0, 0, display.width, display.height);
       },
       function render() {
-        display.render(hero.sprite, hero.position.x, hero.position.y);
+        display.draw(
+          hero.sprite,
+          0,
+          0,
+          hero.sprite.width,
+          hero.sprite.height,
+          hero.position.x,
+          hero.position.y,
+          hero.sprite.width,
+          hero.sprite.height
+        );
       }
     );
+    1;
     gameLoop.start();
     // gameLoop.stop();
   });
