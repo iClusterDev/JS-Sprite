@@ -19,6 +19,7 @@ class Controller {
    * Handles the input state.
    * The keyMap array must be given as constructor parameter.
    * This maps the key pressed (code) to an action name.
+   *
    * @param {*} keyMap - Array of {code: String, action: String}
    *
    * @props action.isActive

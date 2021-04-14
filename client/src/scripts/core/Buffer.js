@@ -13,11 +13,11 @@ class Buffer {
    * @param {*} width - Number: canvas width
    * @param {*} height - Number: canvas height
    *
-   * @getter image
-   * @getter width
+   * @getter canvas
    * @getter height
-   * @method clear()
+   * @getter width
    * @method draw()
+   * @method clear()
    */
   constructor(width = 0, height = 0, id = null) {
     if (width === 0 || height === 0)

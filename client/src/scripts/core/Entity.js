@@ -16,6 +16,7 @@ class Entity {
    * Animated or static game object.
    * If animated, an animation object setting will be required,
    * otherwise the entity will be set to be static
+   *
    * @param {*} config
    * @param {*} config.input: Array - (*optional) controller settings
    * @param {*} config.position: Object - x/y coordinates on canvas
