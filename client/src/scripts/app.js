@@ -4,7 +4,7 @@ import Resource from './core/Resource';
 import Buffer from './core/Buffer';
 import Zombie from './assets/Zombie';
 
-import zombieSpriteSheetSrc from '../images/zombie2.png';
+import zombieSpriteSheetSrc from '../images/zombie.png';
 
 class EntityLayer extends Buffer {
   constructor(entities = []) {
