@@ -9,13 +9,6 @@ class Animation {
   #currentAnimation;
   #currentSequenceIndex;
 
-  /**
-   *
-   * @param {*} animationConfig
-   * @param {*} animationConfig.action: String -
-   * @param {*} animationConfig.step: Number -
-   * @param {*} animationConfig.map: Array - {sequence: Array, cycle: Number}
-   */
   constructor(animationConfig = {}) {
     const { animationStep, animationMap } = animationConfig;
     const defaultAnimation =

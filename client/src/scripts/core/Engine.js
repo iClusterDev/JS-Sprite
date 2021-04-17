@@ -16,8 +16,12 @@ class Engine {
    * updated at the same timestep across different devices.
    * In case of slow devices, a memory spiral catch is in place
    * to never allow three full frames passing without an update.
+   *
    * @param {Function} update - update function
    * @param {Function} render - render function
+   *
+   * @method srart()
+   * @method stop()
    */
   constructor(update = () => {}, render = () => {}) {
     if (Engine.instance) {

@@ -1,8 +1,8 @@
-class Display {
+import Buffer from './Buffer';
+
+class Display extends Buffer {
   #aspectRatio = null;
   #maxWidth = null;
-  #buffer = null;
-  #canvas = null;
 
   /**
    * Game display (singleton)
@@ -16,15 +16,16 @@ class Display {
    * By pressing "F" Display will go in fullscreen mode.
    *
    * @param {*} config
-   * @param {*} config.id - String: id of the DOM canvas element
+   * @param {*} config.id - String: DOM canvas element id
    * @param {*} config.width - Number: display width
    * @param {*} config.height - Number: display height
-   * @param {*} config.background - String: display background color
+   * @param {*} config.background - (*optional) String: display background color
    *
    * @getter width
    * @getter height
+   * @getter canvas
    * @method clear()
-   * @method render()
+   * @method draw()
    */
   constructor(config = {}) {
     if (Display.instance) {
@@ -37,35 +38,20 @@ class Display {
         background = null,
       } = config;
       if (!id || !width || !height)
-        throw new Error(`Display: missing required parameters!`);
+        throw new Error(`Display: id, width & height are required parameters!`);
 
-      this.#canvas = document.querySelector(id);
-      this.#canvas.width = width;
-      this.#canvas.height = height;
+      super(width, height, id);
 
-      if (background) {
-        this.#canvas.style = `background: ${background}`;
-      }
+      if (background) this.canvas.style = `background: ${background}`;
 
       this.#maxWidth = width;
       this.#aspectRatio = height / width;
-
-      this.#buffer = this.#canvas.getContext('2d');
-      this.#buffer.imageSmoothingEnabled = false;
 
       this.#init();
 
       Display.instance = this;
       return this;
     }
-  }
-
-  get width() {
-    return this.#canvas.width;
-  }
-
-  get height() {
-    return this.#canvas.height;
   }
 
   #init() {
@@ -85,7 +71,7 @@ class Display {
 
   #toggleFullscreen() {
     if (!document.fullscreenElement) {
-      this.#canvas.requestFullscreen();
+      this.canvas.requestFullscreen();
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -105,30 +91,12 @@ class Display {
       newHeight = height;
     }
     if (newWidth >= this.#maxWidth) {
-      this.#canvas.width = this.#maxWidth;
-      this.#canvas.height = this.#maxWidth * this.#aspectRatio;
+      this.canvas.width = this.#maxWidth;
+      this.canvas.height = this.#maxWidth * this.#aspectRatio;
     } else {
-      this.#canvas.width = newWidth;
-      this.#canvas.height = newHeight;
+      this.canvas.width = newWidth;
+      this.canvas.height = newHeight;
     }
-  }
-
-  clear() {
-    this.#buffer.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
-  }
-
-  render(frame, positionX, positionY) {
-    this.#buffer.drawImage(
-      frame,
-      0,
-      0,
-      frame.width,
-      frame.height,
-      positionX,
-      positionY,
-      frame.width,
-      frame.height
-    );
   }
 }
 

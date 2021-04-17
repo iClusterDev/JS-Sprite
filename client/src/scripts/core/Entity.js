@@ -1,65 +1,97 @@
+import Graphics from './Graphics';
 import Animation from './Animation';
-import SpriteSheet from './SpriteSheet';
+import Controller from './Controller';
 
 class Entity {
+  #name;
+  #graphics;
+  #position;
+  #animation;
+  #controller;
+  #currentSprite;
+
   /**
    * Game object
    *
    * Animated or static game object.
    * If animated, an animation object setting will be required,
    * otherwise the entity will be set to be static
+   *
    * @param {*} config
+   * @param {*} config.input: Array - (*optional) controller settings
    * @param {*} config.position: Object - x/y coordinates on canvas
    * @param {*} config.graphics: Object - spritesheet settings
    * @param {*} config.animation: Object - (*optional) animation settings
+   *
+   * @getter controller
+   * @getter position
+   * @getter sprite
+   * @method animate()
    */
   constructor(config = {}) {
     const {
-      type = null,
+      name = null,
+      input = null,
       position = null,
       graphics = null,
       animation = null,
     } = config;
-    if (!type || !position || !graphics)
+    if (!name || !position || !graphics)
       throw new Error(
-        'Entity: type, position and graphics parameters are required!'
+        'Entity: name, position and graphics parameters are required!'
       );
 
-    this.type = type;
-    this.position = position;
-    this.graphics = new SpriteSheet(graphics);
+    this.#name = name;
+    this.#position = position;
+    this.#graphics = new Graphics(graphics);
+
+    if (input) {
+      this.#controller = new Controller(input);
+    }
 
     if (animation) {
-      this.animation = new Animation(animation);
-      this.currentSprite = this.graphics.getSprite(
-        this.animation.frameIndex.x,
-        this.animation.frameIndex.y
+      this.#animation = new Animation(animation);
+      this.#currentSprite = this.#graphics.sprite(
+        this.#animation.frameIndex.x,
+        this.#animation.frameIndex.y
       );
     } else {
-      // FIXME
-      // this could be better by
-      // allowing a massive shared spritesheet
-      // especially for level design?
-      this.currentSprite = this.graphics.getSprite(0, 0);
+      this.#currentSprite = this.#graphics.sprite(0, 0);
     }
   }
 
-  get width() {
-    return this.graphics.spriteW;
+  get controller() {
+    if (this.#controller) {
+      return this.#controller;
+    } else {
+      throw new Error(
+        `Entity: ${this.#name} doesn't have an controller component`
+      );
+    }
   }
 
-  get height() {
-    return this.graphics.spriteW;
+  get position() {
+    return this.#position;
   }
 
   get sprite() {
-    if (this.animation && this.animation.frameChanged) {
-      this.currentSprite = this.graphics.getSprite(
-        this.animation.frameIndex.x,
-        this.animation.frameIndex.y
+    if (this.#animation && this.#animation.frameChanged) {
+      this.#currentSprite = this.#graphics.sprite(
+        this.#animation.frameIndex.x,
+        this.#animation.frameIndex.y
       );
     }
-    return this.currentSprite;
+    return this.#currentSprite;
+  }
+
+  animate(action) {
+    if (this.#animation) {
+      this.#animation.animate(action);
+    } else {
+      throw new Error(
+        `Entity: ${this.#name} doesn't have an animation component`
+      );
+    }
   }
 }
 

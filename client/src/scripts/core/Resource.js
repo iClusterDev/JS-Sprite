@@ -9,6 +9,7 @@ class Resource {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = src;
+
       image.onload = function () {
         self.images.push({ image, name });
         resolve({ image, name });
@@ -20,15 +21,18 @@ class Resource {
   };
 
   static preloadImages = function (imagesArray) {
-    return Promise.all(
-      imagesArray.map((imageItem) =>
-        this.preloadImage(imageItem.src, imageItem.name)
-      )
-    );
+    const promises = imagesArray.map((imageItem) => {
+      const { src = null, name = null } = imageItem;
+      if (!src || !name)
+        throw new Error('Resource: src & name are required parameters!');
+      return this.preloadImage(src, name);
+    });
+    return Promise.all(promises);
   };
 
   static getImage = function (name) {
-    return this.images.find((item) => item.name === name);
+    const item = this.images.find((image) => image.name === name);
+    return item.image;
   };
 }
 
