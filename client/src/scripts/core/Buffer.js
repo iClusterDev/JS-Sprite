@@ -36,6 +36,10 @@ class Buffer {
     this.#buffer.imageSmoothingEnabled = false;
   }
 
+  get context() {
+    return this.#buffer;
+  }
+
   get canvas() {
     return this.#buffer.canvas;
   }

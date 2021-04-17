@@ -1,13 +1,13 @@
 import Entity from '../core/Entity';
 
-class Hero extends Entity {
+class Zombie extends Entity {
   constructor(config = {}) {
     super(config);
 
     this.updated = false;
     this.speed = {
-      x: 0.25,
-      y: 0.25,
+      x: 0.2,
+      y: 0.2,
     };
     this.tile = {
       x: Math.floor(config.position.x),
@@ -17,18 +17,23 @@ class Hero extends Entity {
 
   update(elapsedTime, minPositionX, minPositionY, worldWidth, worldHeight) {
     this.updated = false;
+
     // update position
     let deltaX = 0;
     let deltaY = 0;
     if (this.controller.right.isActive) {
+      this.graphics.animate('right');
       deltaX -= this.speed.x * elapsedTime;
     } else if (this.controller.left.isActive) {
+      this.graphics.animate('left');
       deltaX += this.speed.x * elapsedTime;
     }
 
     if (this.controller.up.isActive) {
+      this.graphics.animate('up');
       deltaY -= this.speed.y * elapsedTime;
     } else if (this.controller.down.isActive) {
+      this.graphics.animate('down');
       deltaY += this.speed.y * elapsedTime;
     }
 
@@ -37,8 +42,8 @@ class Hero extends Entity {
       let newPositionY = this.position.y + deltaY;
 
       // ...and here you check for out of bounds
-      let maxPositionX = worldWidth - this.sprite.width;
-      let maxPositionY = worldHeight - this.sprite.height;
+      let maxPositionX = worldWidth - this.graphics.sprite.width;
+      let maxPositionY = worldHeight - this.graphics.sprite.height;
 
       if (newPositionX < minPositionX) {
         this.position.x = minPositionX;
@@ -64,4 +69,4 @@ class Hero extends Entity {
   }
 }
 
-export default Hero;
+export default Zombie;

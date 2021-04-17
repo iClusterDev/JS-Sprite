@@ -2,12 +2,9 @@ import Engine from './core/Engine';
 import Display from './core/Display';
 import Resource from './core/Resource';
 import Buffer from './core/Buffer';
+import Zombie from './assets/Zombie';
 
-import heroSpriteSheetSrc from '../images/hero.png';
-import blockSpriteSheetSrc from '../images/block.png';
-
-import Hero from './assets/Hero';
-import Block from './assets/Block';
+import zombieSpriteSheetSrc from '../images/zombie2.png';
 
 class EntityLayer extends Buffer {
   constructor(entities = []) {
@@ -32,25 +29,22 @@ class EntityLayer extends Buffer {
     this.clear();
     this.entities.forEach((entity) => {
       this.draw(
-        entity.sprite,
+        entity.graphics.sprite,
         0,
         0,
-        entity.sprite.width,
-        entity.sprite.height,
+        entity.graphics.sprite.width,
+        entity.graphics.sprite.height,
         entity.position.x,
         entity.position.y,
-        entity.sprite.width,
-        entity.sprite.height
+        entity.graphics.sprite.width,
+        entity.graphics.sprite.height
       );
     });
   }
 }
 
 export default () => {
-  const IMAGES = [
-    { src: heroSpriteSheetSrc, name: 'heroSpriteSheet' },
-    { src: blockSpriteSheetSrc, name: 'blockSpriteSheet' },
-  ];
+  const IMAGES = [{ src: zombieSpriteSheetSrc, name: 'zombieSpriteSheet' }];
 
   Resource.preloadImages(IMAGES).then(() => {
     // setup
@@ -62,30 +56,40 @@ export default () => {
     });
 
     const entityLayer = new EntityLayer([
-      new Hero({
+      new Zombie({
         name: 'hero',
         position: { x: 100, y: 0 },
         graphics: {
-          spriteSheet: Resource.getImage('heroSpriteSheet'),
-          columns: 1,
-          rows: 1,
+          spriteSheet: Resource.getImage('zombieSpriteSheet'),
+          columns: 3,
+          rows: 4,
           scale: 2,
-        },
-        input: [
-          { code: 'KeyW', action: 'up' },
-          { code: 'KeyS', action: 'down' },
-          { code: 'KeyA', action: 'right' },
-          { code: 'KeyD', action: 'left' },
-        ],
-      }),
-      new Block({
-        name: 'block',
-        position: { x: 0, y: 0 },
-        graphics: {
-          spriteSheet: Resource.getImage('blockSpriteSheet'),
-          columns: 1,
-          rows: 1,
-          scale: 2,
+          animation: {
+            animationStep: 10,
+            animationMap: [
+              {
+                default: true,
+                action: 'down',
+                cycle: 0,
+                sequence: [0, 1, 0, 2],
+              },
+              {
+                action: 'up',
+                cycle: 2,
+                sequence: [0, 1, 0, 2],
+              },
+              {
+                action: 'left',
+                cycle: 1,
+                sequence: [0, 1, 0, 2],
+              },
+              {
+                action: 'right',
+                cycle: 3,
+                sequence: [0, 1, 0, 2],
+              },
+            ],
+          },
         },
         input: [
           { code: 'KeyW', action: 'up' },
@@ -113,6 +117,6 @@ export default () => {
       }
     );
     1;
-    // gameLoop.start();
+    gameLoop.start();
   });
 };

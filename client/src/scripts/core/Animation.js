@@ -1,6 +1,3 @@
-// ==========================================================
-// animation
-// ==========================================================
 class Animation {
   #updated;
   #frameCounter;
@@ -10,10 +7,19 @@ class Animation {
   #currentSequenceIndex;
 
   /**
+   * Animation component
    *
-   * @param {*} animationConfig
-   * @param {*} animationConfig.step
-   * @param {*} animationConfig.map
+   * Handles the animation indexes defined as per
+   * configuration object. The animation step is
+   * the update rate defining the animation speed, defined
+   * in number of frames.
+   * The animation map is an array of object containing the
+   * action: animation name, cycle: cycle index, sequence: array
+   * of frame indexes
+   *
+   * @param {*} animationConfig Object - config object
+   * @param {*} animationConfig.step Number - animation step
+   * @param {*} animationConfig.map Array - animation indexes definition
    */
   constructor(animationConfig = {}) {
     const { animationStep, animationMap } = animationConfig;
@@ -45,7 +51,7 @@ class Animation {
     };
   }
 
-  #set(action) {
+  #setAnimationAction(action) {
     this.#currentAnimation = this.#animationMap.find(
       (animationMapItem) => animationMapItem.action === action
     );
@@ -56,7 +62,8 @@ class Animation {
     this.#updated = false;
 
     if (this.#frameCounter === this.#animationStep) {
-      if (action !== this.#currentAnimation.action) this.#set(action);
+      if (action !== this.#currentAnimation.action)
+        this.#setAnimationAction(action);
       this.#frameCounter = 0;
       this.#currentSequenceIndex++;
       if (this.#currentSequenceIndex >= this.#currentAnimation.sequence.length)
