@@ -1,6 +1,6 @@
 import Entity from '../core/Entity';
 
-class Enemy extends Entity {
+class Block extends Entity {
   constructor(config = {}) {
     super(config);
 
@@ -16,6 +16,7 @@ class Enemy extends Entity {
   }
 
   update(elapsedTime, minPositionX, minPositionY, worldWidth, worldHeight) {
+    this.updated = false;
     // update position
     let deltaX = 0;
     let deltaY = 0;
@@ -63,4 +64,4 @@ class Enemy extends Entity {
   }
 }
 
-export default Enemy;
+export default Block;

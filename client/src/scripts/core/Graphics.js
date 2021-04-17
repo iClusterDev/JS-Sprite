@@ -12,11 +12,12 @@ class Graphics {
    * The sprite(column, row) function will return
    * the sprite image at the selected location
    *
-   * @param {*} config
-   * @param {*} config.spriteSheet: Image - spritesheet image type
-   * @param {*} config.columns: Number - number of columns
-   * @param {*} config.rows: Number - number of rows
-   * @param {*} config.scale: Number - (*optional) scalar to apply
+   * @param {*} config Object - Configuration object
+   * @param {*} config.spriteSheet Image - spritesheet image type
+   * @param {*} config.columns Number - number of columns
+   * @param {*} config.rows Number - number of rows
+   * @param {*} config.scale Number - (*optional) scalar to apply
+   * @param {*} config.animation Object - (*optional) animation config
    *
    * @method sprite(rows, columns)
    */

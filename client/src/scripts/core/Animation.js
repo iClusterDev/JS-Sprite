@@ -9,6 +9,12 @@ class Animation {
   #currentAnimation;
   #currentSequenceIndex;
 
+  /**
+   *
+   * @param {*} animationConfig
+   * @param {*} animationConfig.step
+   * @param {*} animationConfig.map
+   */
   constructor(animationConfig = {}) {
     const { animationStep, animationMap } = animationConfig;
     const defaultAnimation =

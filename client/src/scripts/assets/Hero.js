@@ -16,6 +16,7 @@ class Hero extends Entity {
   }
 
   update(elapsedTime, minPositionX, minPositionY, worldWidth, worldHeight) {
+    this.updated = false;
     // update position
     let deltaX = 0;
     let deltaY = 0;
