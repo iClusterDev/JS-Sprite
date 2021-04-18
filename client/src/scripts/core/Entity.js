@@ -3,12 +3,10 @@ import Animation from './Animation';
 import Controller from './Controller';
 
 class Entity {
-  #name;
-  #graphics;
-  #position;
-  #animation;
-  #controller;
-  #currentSprite;
+  #name = null;
+  #graphics = null;
+  #position = null;
+  #controller = null;
 
   /**
    * Game object
@@ -21,12 +19,10 @@ class Entity {
    * @param {*} config.input: Array - (*optional) controller settings
    * @param {*} config.position: Object - x/y coordinates on canvas
    * @param {*} config.graphics: Object - spritesheet settings
-   * @param {*} config.animation: Object - (*optional) animation settings
    *
    * @getter controller
+   * @getter graphics
    * @getter position
-   * @getter sprite
-   * @method animate()
    */
   constructor(config = {}) {
     const {
@@ -34,7 +30,6 @@ class Entity {
       input = null,
       position = null,
       graphics = null,
-      animation = null,
     } = config;
     if (!name || !position || !graphics)
       throw new Error(
@@ -48,16 +43,6 @@ class Entity {
     if (input) {
       this.#controller = new Controller(input);
     }
-
-    if (animation) {
-      this.#animation = new Animation(animation);
-      this.#currentSprite = this.#graphics.sprite(
-        this.#animation.frameIndex.x,
-        this.#animation.frameIndex.y
-      );
-    } else {
-      this.#currentSprite = this.#graphics.sprite(0, 0);
-    }
   }
 
   get controller() {
@@ -70,28 +55,18 @@ class Entity {
     }
   }
 
-  get position() {
-    return this.#position;
-  }
-
-  get sprite() {
-    if (this.#animation && this.#animation.frameChanged) {
-      this.#currentSprite = this.#graphics.sprite(
-        this.#animation.frameIndex.x,
-        this.#animation.frameIndex.y
-      );
-    }
-    return this.#currentSprite;
-  }
-
-  animate(action) {
-    if (this.#animation) {
-      this.#animation.animate(action);
+  get graphics() {
+    if (this.#graphics) {
+      return this.#graphics;
     } else {
       throw new Error(
-        `Entity: ${this.#name} doesn't have an animation component`
+        `Entity: ${this.#name} doesn't have an graphics component`
       );
     }
+  }
+
+  get position() {
+    return this.#position;
   }
 }
 

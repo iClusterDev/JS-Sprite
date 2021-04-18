@@ -1,8 +1,12 @@
 import Buffer from './Buffer';
+import Animation from './Animation';
 
 class Graphics {
   #buffer;
   #source;
+  #spriteWidth;
+  #spriteHeight;
+  #animation;
 
   /**
    * Graphics
@@ -22,29 +26,59 @@ class Graphics {
    * @method sprite(rows, columns)
    */
   constructor(config = {}) {
-    const { spriteSheet, rows, columns, scale = 1 } = config;
+    const { spriteSheet, rows, columns, scale = 1, animation = null } = config;
     if (!spriteSheet || !rows || !columns)
       throw new Error(
         'Graphics: spriteSheet, rows & columns are required parameter!'
       );
 
+    this.#source = spriteSheet;
+    this.#spriteWidth = spriteSheet.width / columns;
+    this.#spriteHeight = spriteSheet.height / rows;
+
     this.#buffer = new Buffer(
       (spriteSheet.width / columns) * scale,
       (spriteSheet.height / rows) * scale
     );
-    this.#source = spriteSheet;
+
+    if (animation) {
+      this.#animation = new Animation(animation);
+      this.#drawSprite(
+        this.#animation.frameIndex.x,
+        this.#animation.frameIndex.y
+      );
+    } else {
+      this.#drawSprite(0, 0);
+    }
   }
 
-  sprite(columnIndex, rowIndex) {
+  get sprite() {
+    if (this.#animation && this.#animation.frameChanged) {
+      this.#drawSprite(
+        this.#animation.frameIndex.x,
+        this.#animation.frameIndex.y
+      );
+    }
+    return this.#buffer.canvas;
+  }
+
+  #drawSprite(columnIndex, rowIndex) {
     this.#buffer.clear();
     this.#buffer.draw(
       this.#source,
-      this.#source.width * columnIndex,
-      this.#source.height * rowIndex,
-      this.#source.width,
-      this.#source.height
+      this.#spriteWidth * columnIndex,
+      this.#spriteHeight * rowIndex,
+      this.#spriteWidth,
+      this.#spriteHeight
     );
-    return this.#buffer.canvas;
+  }
+
+  animate(action) {
+    if (this.#animation) {
+      this.#animation.animate(action);
+    } else {
+      throw new Error(`Graphics: no animation component found!`);
+    }
   }
 }
 
