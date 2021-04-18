@@ -116,7 +116,6 @@ export default () => {
         );
       }
     );
-    1;
     gameLoop.start();
   });
 };
