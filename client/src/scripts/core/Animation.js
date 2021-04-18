@@ -6,8 +6,6 @@ class Animation {
   #currentAnimation;
   #currentSequenceIndex;
 
-<<<<<<< HEAD
-=======
   /**
    * Animation component
    *
@@ -23,7 +21,6 @@ class Animation {
    * @param {*} animationConfig.step Number - animation step
    * @param {*} animationConfig.map Array - animation indexes definition
    */
->>>>>>> demo_animation
   constructor(animationConfig = {}) {
     const { animationStep, animationMap } = animationConfig;
     const defaultAnimation =

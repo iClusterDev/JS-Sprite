@@ -1,11 +1,6 @@
 import Engine from './core/Engine';
 import Display from './core/Display';
 import Resource from './core/Resource';
-<<<<<<< HEAD
-
-export default () => {
-  const IMAGES = [];
-=======
 import Buffer from './core/Buffer';
 import Zombie from './assets/Zombie';
 
@@ -50,7 +45,6 @@ class EntityLayer extends Buffer {
 
 export default () => {
   const IMAGES = [{ src: zombieSpriteSheetSrc, name: 'zombieSpriteSheet' }];
->>>>>>> demo_animation
 
   Resource.preloadImages(IMAGES).then(() => {
     // setup
@@ -61,8 +55,6 @@ export default () => {
       background: 'lightBlue',
     });
 
-<<<<<<< HEAD
-=======
     const entityLayer = new EntityLayer([
       new Zombie({
         name: 'hero',
@@ -108,17 +100,12 @@ export default () => {
       }),
     ]);
 
->>>>>>> demo_animation
     // game loop
     const gameLoop = new Engine(
       function update(elapsedTime) {},
       function render() {}
     );
-<<<<<<< HEAD
-    // gameLoop.start();
-=======
     1;
     gameLoop.start();
->>>>>>> demo_animation
   });
 };
