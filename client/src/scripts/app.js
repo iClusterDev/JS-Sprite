@@ -105,7 +105,6 @@ export default () => {
       function update(elapsedTime) {},
       function render() {}
     );
-    1;
     gameLoop.start();
   });
 };
