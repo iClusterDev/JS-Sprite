@@ -102,8 +102,19 @@ export default () => {
 
     // game loop
     const gameLoop = new Engine(
-      function update(elapsedTime) {},
-      function render() {}
+      function update(elapsedTime) {
+        entityLayer.update(elapsedTime, 0, 0, display.width, display.height);
+      },
+      function render() {
+        display.clear();
+        display.draw(
+          entityLayer.canvas,
+          0,
+          0,
+          entityLayer.canvas.width,
+          entityLayer.canvas.height
+        );
+      }
     );
     gameLoop.start();
   });
