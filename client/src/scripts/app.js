@@ -57,77 +57,26 @@ export default () => {
         { code: 'KeyA', action: 'right' },
         { code: 'KeyD', action: 'left' },
       ],
-      update: () => {
-        this.updated = false;
-
-        // update position
-        let deltaX = 0;
-        let deltaY = 0;
-        if (this.controller.right.isActive) {
-          this.graphics.animate('right');
-          deltaX -= this.speed.x * elapsedTime;
-        } else if (this.controller.left.isActive) {
-          this.graphics.animate('left');
-          deltaX += this.speed.x * elapsedTime;
-        }
-
-        if (this.controller.up.isActive) {
-          this.graphics.animate('up');
-          deltaY -= this.speed.y * elapsedTime;
-        } else if (this.controller.down.isActive) {
-          this.graphics.animate('down');
-          deltaY += this.speed.y * elapsedTime;
-        }
-
-        if (deltaX !== 0 || deltaY !== 0) {
-          let newPositionX = this.position.x + deltaX;
-          let newPositionY = this.position.y + deltaY;
-
-          // ...and here you check for out of bounds
-          let maxPositionX = worldWidth - this.graphics.sprite.width;
-          let maxPositionY = worldHeight - this.graphics.sprite.height;
-
-          if (newPositionX < minPositionX) {
-            this.position.x = minPositionX;
-          } else if (newPositionX > maxPositionX) {
-            this.position.x = maxPositionX;
-          } else {
-            this.position.x += deltaX;
-          }
-
-          if (newPositionY < minPositionY) {
-            this.position.y = minPositionY;
-          } else if (newPositionY > maxPositionY) {
-            this.position.y = maxPositionY;
-          } else {
-            this.position.y += deltaY;
-          }
-
-          // ...and here you check for collision
-          this.tile.x = Math.floor(this.position.x);
-          this.tile.y = Math.floor(this.position.y);
-        }
-      },
     };
 
     // game loop
     const gameLoop = new Engine(
       function update(elapsedTime) {
-        // zombie.update(elapsedTime, 0, 0, display.width, display.height);
+        zombie.update(elapsedTime, 0, 0, display.width, display.height);
       },
       function render() {
         display.clear();
-        // display.draw(
-        //   zombie.graphics.sprite,
-        //   0,
-        //   0,
-        //   zombie.graphics.sprite.width,
-        //   zombie.graphics.sprite.height,
-        //   zombie.position.x,
-        //   zombie.position.y,
-        //   zombie.graphics.sprite.width,
-        //   zombie.graphics.sprite.height
-        // );
+        display.draw(
+          zombie.graphics.sprite,
+          0,
+          0,
+          zombie.graphics.sprite.width,
+          zombie.graphics.sprite.height,
+          zombie.position.x,
+          zombie.position.y,
+          zombie.graphics.sprite.width,
+          zombie.graphics.sprite.height
+        );
       }
     );
     gameLoop.start();
