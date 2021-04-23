@@ -1,9 +1,10 @@
 import Graphics from './Graphics';
-import Animation from './Animation';
 import Controller from './Controller';
 
 class Entity {
   #name = null;
+  #solid = null;
+  #dynamic = null;
   #graphics = null;
   #position = null;
   #controller = null;
@@ -16,7 +17,7 @@ class Entity {
    * otherwise the entity will be set to be static
    *
    * @param {*} config
-   * @param {*} config.input: Array - (*optional) controller settings
+   * @param {*} config.controller: Array - (*optional) controller settings
    * @param {*} config.position: Object - x/y coordinates on canvas
    * @param {*} config.graphics: Object - spritesheet settings
    *
@@ -27,22 +28,44 @@ class Entity {
   constructor(config = {}) {
     const {
       name = null,
-      input = null,
+      solid = null,
+      dynamic = null,
       position = null,
       graphics = null,
+      controller = null,
     } = config;
-    if (!name || !position || !graphics)
+    if (!name || !solid || !dynamic || !position || !graphics)
       throw new Error(
-        'Entity: name, position and graphics parameters are required!'
+        'Entity: name, solid, dynamic, position and graphics parameters are required!'
       );
 
     this.#name = name;
+    this.#solid = solid;
+    this.#dynamic = dynamic;
     this.#position = position;
     this.#graphics = new Graphics(graphics);
 
-    if (input) {
-      this.#controller = new Controller(input);
-    }
+    this.#controller = controller ? new Controller(controller) : null;
+  }
+
+  get name() {
+    return this.#name;
+  }
+
+  get solid() {
+    return this.#solid;
+  }
+
+  get dynamic() {
+    return this.#dynamic;
+  }
+
+  get position() {
+    return this.#position;
+  }
+
+  get graphics() {
+    return this.#graphics;
   }
 
   get controller() {
@@ -53,20 +76,6 @@ class Entity {
         `Entity: ${this.#name} doesn't have an controller component`
       );
     }
-  }
-
-  get graphics() {
-    if (this.#graphics) {
-      return this.#graphics;
-    } else {
-      throw new Error(
-        `Entity: ${this.#name} doesn't have an graphics component`
-      );
-    }
-  }
-
-  get position() {
-    return this.#position;
   }
 }
 

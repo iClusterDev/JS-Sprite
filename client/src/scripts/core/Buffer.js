@@ -52,12 +52,12 @@ class Buffer {
     return this.#buffer.canvas.height;
   }
 
-  clear() {
+  clear(rectX = null, rectY = null, rectW = null, rectH = null) {
     this.#buffer.clearRect(
-      0,
-      0,
-      this.#buffer.canvas.width,
-      this.#buffer.canvas.height
+      rectX || 0,
+      rectY || 0,
+      rectW || this.#buffer.canvas.width,
+      rectH || this.#buffer.canvas.height
     );
   }
 
