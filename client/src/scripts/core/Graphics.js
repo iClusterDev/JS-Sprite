@@ -26,7 +26,13 @@ class Graphics {
    * @method sprite(rows, columns)
    */
   constructor(config = {}) {
-    const { spriteSheet, rows, columns, scale = 1, animation = null } = config;
+    const {
+      spriteSheet = null,
+      columns = null,
+      rows = null,
+      scale = 1,
+      animation = null,
+    } = config;
     if (!spriteSheet || !rows || !columns)
       throw new Error(
         'Graphics: spriteSheet, rows & columns are required parameter!'
