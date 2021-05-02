@@ -12,6 +12,8 @@ class Buffer {
    * @param {*} id - (*optional) String: DOM canvas element id
    * @param {*} width - Number: canvas width
    * @param {*} height - Number: canvas height
+   * @param {*} offscreen - Boolean: offscreen true by default
+   * @param {*} background - String: transparent background by default
    *
    * @getter canvas
    * @getter height
@@ -19,15 +21,25 @@ class Buffer {
    * @method draw()
    * @method clear()
    */
-  constructor(width = 0, height = 0, id = null) {
+  constructor(config = {}) {
+    const {
+      id = '',
+      width = 0,
+      height = 0,
+      offscreen = true,
+      background = 'transparent',
+    } = config;
     if (width === 0 || height === 0)
       throw new Error(`Buffer: width and height are required!`);
 
-    if (id) {
-      // grab from DOM
-      const canvas = document.querySelector(id);
+    if (!offscreen) {
+      const canvas =
+        id.length > 0
+          ? document.querySelector(id)
+          : document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
+      canvas.style = `background: ${background}`;
       this.#buffer = canvas.getContext('2d');
     } else {
       this.#buffer = new OffscreenCanvas(width, height).getContext('2d');
@@ -36,9 +48,9 @@ class Buffer {
     this.#buffer.imageSmoothingEnabled = false;
   }
 
-  get context() {
-    return this.#buffer;
-  }
+  // get context() {
+  //   return this.#buffer;
+  // }
 
   get canvas() {
     return this.#buffer.canvas;

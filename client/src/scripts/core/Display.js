@@ -15,12 +15,6 @@ class Display extends Buffer {
    * on the given width and height.
    * By pressing "F" Display will go in fullscreen mode.
    *
-   * @param {*} config
-   * @param {*} config.id - String: DOM canvas element id
-   * @param {*} config.width - Number: display width
-   * @param {*} config.height - Number: display height
-   * @param {*} config.background - (*optional) String: display background color
-   *
    * @getter width
    * @getter height
    * @getter canvas
@@ -32,17 +26,22 @@ class Display extends Buffer {
       return Display.instance;
     } else {
       const {
-        id = null,
-        width = null,
-        height = null,
-        background = null,
+        id = '',
+        width = 832,
+        height = 640,
+        background = 'transparent',
       } = config;
-      if (!id || !width || !height)
-        throw new Error(`Display: id, width & height are required parameters!`);
 
-      super(width, height, id);
+      if (id.length === 0)
+        throw new Error(`Display: id is required parameters!`);
 
-      if (background) this.canvas.style = `background: ${background}`;
+      super({
+        id,
+        width,
+        height,
+        background,
+        offscreen: false,
+      });
 
       this.#maxWidth = width;
       this.#aspectRatio = height / width;
