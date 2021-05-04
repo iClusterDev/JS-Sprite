@@ -1,12 +1,7 @@
 import Buffer from './Buffer';
 import Graphics from './Graphics';
 import Validator from './Validator';
-
-class Randomizer {
-  static id() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-  }
-}
+import Randomizer from './Randomizer';
 
 const tilemapSchema = {
   unit: {
