@@ -17,7 +17,7 @@ class Graphics {
    * the sprite image at the selected location
    *
    * @param {*} config Object - Configuration object
-   * @param {*} config.spriteSheet Image - spritesheet image type
+   * @param {*} config.spritesheet Image - spritesheet image type
    * @param {*} config.columns Number - number of columns
    * @param {*} config.rows Number - number of rows
    * @param {*} config.scale Number - (*optional) scalar to apply
@@ -27,25 +27,25 @@ class Graphics {
    */
   constructor(config = {}) {
     const {
-      spriteSheet = null,
+      spritesheet = null,
       columns = null,
       rows = null,
       scale = 1,
       animation = null,
     } = config;
-    if (!spriteSheet || !rows || !columns)
+    if (!spritesheet || !rows || !columns)
       throw new Error(
-        'Graphics: spriteSheet, rows & columns are required parameter!'
+        'Graphics: spritesheet, rows & columns are required parameter!'
       );
 
-    this.#source = spriteSheet;
-    this.#spriteWidth = spriteSheet.width / columns;
-    this.#spriteHeight = spriteSheet.height / rows;
+    this.#source = spritesheet;
+    this.#spriteWidth = spritesheet.width / columns;
+    this.#spriteHeight = spritesheet.height / rows;
 
-    this.#buffer = new Buffer(
-      (spriteSheet.width / columns) * scale,
-      (spriteSheet.height / rows) * scale
-    );
+    this.#buffer = new Buffer({
+      width: (spritesheet.width / columns) * scale,
+      height: (spritesheet.height / rows) * scale,
+    });
 
     if (animation) {
       this.#animation = new Animation(animation);
@@ -66,6 +66,10 @@ class Graphics {
       );
     }
     return this.#buffer.canvas;
+  }
+
+  set sprite({ column = 0, row = 0 }) {
+    this.#drawSprite(column, row);
   }
 
   #drawSprite(columnIndex, rowIndex) {

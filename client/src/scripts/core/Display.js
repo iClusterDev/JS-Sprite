@@ -29,7 +29,7 @@ class Display extends Buffer {
         id = '',
         width = 832,
         height = 640,
-        background = 'transparent',
+        color = 'transparent',
       } = config;
 
       if (id.length === 0)
@@ -39,8 +39,7 @@ class Display extends Buffer {
         id,
         width,
         height,
-        background,
-        offscreen: false,
+        color,
       });
 
       this.#maxWidth = width;

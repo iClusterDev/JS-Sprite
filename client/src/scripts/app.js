@@ -1,66 +1,77 @@
 import Engine from './core/Engine';
 import Display from './core/Display';
 import Resource from './core/Resource';
+import { Level } from './core/Level';
 import worldImage from '../images/world.png';
 
-class Tilemap {
-  constructor(config = { tileSheet: null, unit: 0, map: [], symbols: [] }) {
-    console.log('DEBUG ~ constructor ~ config', config);
-  }
-}
-
 export default async () => {
-  // load resources
   await Resource.preloadImages([{ src: worldImage, name: 'worldTileSheet' }]);
 
   // display
-  const displayConfig = {
+  const display = new Display({
     id: 'canvas',
     width: 832,
     height: 640,
-    background: 'lightblue',
-  };
-  const display = new Display(displayConfig);
+  });
 
-  // level
-  const levelConfig = {
-    tileSheet: Resource.getImage('worldTileSheet'),
-    unit: 16,
-    map: [
-      '1........1',
-      '1........1',
-      '1........1',
-      '1........1',
-      '1........1',
-      '1........1',
-      '1........1',
-      '1........1',
-      '1........1',
-      '1555555551',
-    ],
-    symbols: [
-      {
-        name: 'yellowBrick',
-        row: 0,
-        column: 0,
-        symbol: '1',
-      },
-      {
-        name: 'grass1',
-        row: 1,
-        column: 1,
-        symbol: '5',
-      },
-    ],
-  };
-  const tilemap = new Tilemap(levelConfig);
+  const worldTileSheet = Resource.getImage('worldTileSheet');
+  const level = new Level({
+    atlas: {
+      spritesheet: worldTileSheet,
+      columns: 3,
+      rows: 3,
+    },
+    tilemap: {
+      map: [
+        [1, 2, 2, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [3, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      ],
+      unit: 32,
+      tiles: [
+        {
+          solid: false,
+          symbol: 1,
+          atlas: {
+            column: 0,
+            row: 0,
+          },
+        },
+        {
+          solid: false,
+          symbol: 2,
+          atlas: {
+            column: 1,
+            row: 0,
+          },
+        },
+        {
+          solid: true,
+          symbol: 3,
+          atlas: {
+            column: 2,
+            row: 0,
+          },
+        },
+      ],
+    },
+  });
+
+  display.draw(level.buffer.canvas, 0, 0, 400, 400, 0, 0, 400, 400);
 
   // game loop
-  const gameLoop = new Engine(
-    function update(elapsedTime) {},
-    function render() {}
-  );
+  // const gameLoop = new Engine(
+  //   function update(elapsedTime) {},
+  //   function render() {}
+  // );
 
   // start
-  gameLoop.start();
+  // gameLoop.start();
 };

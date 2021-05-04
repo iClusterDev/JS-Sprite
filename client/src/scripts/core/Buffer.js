@@ -22,35 +22,29 @@ class Buffer {
    * @method clear()
    */
   constructor(config = {}) {
-    const {
-      id = '',
-      width = 0,
-      height = 0,
-      offscreen = true,
-      background = 'transparent',
-    } = config;
+    const { id = '', width = 0, height = 0, color = 'transparent' } = config;
     if (width === 0 || height === 0)
       throw new Error(`Buffer: width and height are required!`);
 
-    if (!offscreen) {
-      const canvas =
-        id.length > 0
-          ? document.querySelector(id)
-          : document.createElement('canvas');
+    if (id.length > 0) {
+      const canvas = document.querySelector(id);
       canvas.width = width;
       canvas.height = height;
-      canvas.style = `background: ${background}`;
       this.#buffer = canvas.getContext('2d');
     } else {
       this.#buffer = new OffscreenCanvas(width, height).getContext('2d');
     }
 
     this.#buffer.imageSmoothingEnabled = false;
+    if (color !== 'transparent') {
+      this.#buffer.fillStyle = color;
+      this.#buffer.fillRect(0, 0, width, height);
+    }
   }
 
-  // get context() {
-  //   return this.#buffer;
-  // }
+  get context() {
+    return this.#buffer;
+  }
 
   get canvas() {
     return this.#buffer.canvas;
