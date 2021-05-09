@@ -1,7 +1,7 @@
 import Engine from './core/Engine';
 import Display from './core/Display';
 import Resource from './core/Resource';
-import { Level } from './core/Level';
+import { WorldLayer } from './core/Level';
 import worldImage from '../images/world.png';
 
 export default async () => {
@@ -15,15 +15,19 @@ export default async () => {
   });
 
   const worldTileSheet = Resource.getImage('worldTileSheet');
-  const level = new Level({
-    atlas: {
-      spritesheet: worldTileSheet,
-      columns: 3,
-      rows: 3,
-    },
-    tilemap: {
-      map: [
-        [1, 2, 2, 0, 0, 0, 0, 0, 0, 1],
+  const worldConfig = {
+    // columns: 10,
+    // rows: 10,
+    // unit: 32,
+    world: {
+      unit: 32,
+      atlas: {
+        spritesheet: worldTileSheet,
+        columns: 3,
+        rows: 3,
+      },
+      grid: [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -34,7 +38,6 @@ export default async () => {
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       ],
-      unit: 32,
       tiles: [
         {
           solid: false,
@@ -56,15 +59,19 @@ export default async () => {
           solid: true,
           symbol: 3,
           atlas: {
-            column: 2,
-            row: 0,
+            column: 0,
+            row: 1,
           },
         },
       ],
     },
-  });
+  };
 
-  display.draw(level.buffer.canvas, 0, 0, 400, 400, 0, 0, 400, 400);
+  const worldLayer = new WorldLayer(worldConfig.world);
+  worldLayer.update();
+  worldLayer.draw();
+
+  // display.draw(worldLayer.buffer.canvas, 0, 0, 400, 400, 0, 0, 400, 400);
 
   // game loop
   // const gameLoop = new Engine(
