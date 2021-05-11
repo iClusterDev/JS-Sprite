@@ -1,6 +1,6 @@
 import Entity from '../core/Entity';
 
-class Zombie extends Entity {
+class Player extends Entity {
   constructor(config = {}) {
     super(config);
 
@@ -8,10 +8,6 @@ class Zombie extends Entity {
     this.speed = {
       x: 0.2,
       y: 0.2,
-    };
-    this.tile = {
-      x: Math.floor(config.position.x),
-      y: Math.floor(config.position.y),
     };
   }
 
@@ -22,18 +18,14 @@ class Zombie extends Entity {
     let deltaX = 0;
     let deltaY = 0;
     if (this.controller.right.isActive) {
-      this.graphics.animate('right');
       deltaX -= this.speed.x * elapsedTime;
     } else if (this.controller.left.isActive) {
-      this.graphics.animate('left');
       deltaX += this.speed.x * elapsedTime;
     }
 
     if (this.controller.up.isActive) {
-      this.graphics.animate('up');
       deltaY -= this.speed.y * elapsedTime;
     } else if (this.controller.down.isActive) {
-      this.graphics.animate('down');
       deltaY += this.speed.y * elapsedTime;
     }
 
@@ -42,8 +34,8 @@ class Zombie extends Entity {
       let newPositionY = this.position.y + deltaY;
 
       // ...and here you check for out of bounds
-      let maxPositionX = worldWidth - this.graphics.sprite.width;
-      let maxPositionY = worldHeight - this.graphics.sprite.height;
+      let maxPositionX = worldWidth - this.sprite.width;
+      let maxPositionY = worldHeight - this.sprite.height;
 
       if (newPositionX < minPositionX) {
         this.position.x = minPositionX;
@@ -61,12 +53,9 @@ class Zombie extends Entity {
         this.position.y += deltaY;
       }
 
-      // ...and here you check for collision
-      this.tile.x = Math.floor(this.position.x);
-      this.tile.y = Math.floor(this.position.y);
       this.updated = true;
     }
   }
 }
 
-export default Zombie;
+export default Player;

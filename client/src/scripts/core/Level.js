@@ -2,6 +2,7 @@ import Buffer from './Buffer';
 import Graphics from './Graphics';
 import Validator from './Validator';
 import Randomizer from './Randomizer';
+import Camera from './Camera';
 
 /**
  * Tile schema object
@@ -77,6 +78,10 @@ class Grid {
     Object.freeze(this);
   }
 
+  get grid() {
+    return this.#grid;
+  }
+
   #getBounds(index, aperture, max) {
     if (index < 0 || index > max - 1)
       throw new Error('Grid.getBounds: "index" is out of bounds!');
@@ -118,6 +123,23 @@ class Grid {
       bounds.maxIndex
     );
   }
+
+  getRect(rectX, rectY, rows, columns, aperture = 0) {
+    let rowStart = Math.floor(rectY - aperture);
+    let colStart = Math.floor(rectX - aperture);
+    // if (rowStart < 0) rowStart = 0;
+    // if (colStart < 0) colStart = 0;
+
+    let rowEnd = Math.floor(rectY + rows - 1 + aperture);
+    let colEnd = Math.floor(rectX + columns - 1 + aperture);
+    // if (rowEnd < this.rows - 1) rowEnd = this.rows - 1;
+    // if (colEnd < this.columns - 1) colEnd = this.columns - 1;
+
+    let result = this.#grid.slice(rowStart, rowEnd + 1);
+    return result.map((row) => {
+      return row.slice(colStart, colEnd + 1);
+    });
+  }
 }
 
 class WorldLayer {
@@ -140,82 +162,205 @@ class WorldLayer {
 
     this.unit = unit;
     this.updated = false;
-    this.selected = [];
+    this.actives = [];
     this.tilemap = new Grid(tilemap);
     this.atlas = new Graphics(atlas);
 
+    const width = this.tilemap.columns * this.unit;
+    const height = this.tilemap.rows * this.unit;
     this.buffer = new Buffer({
-      width: this.tilemap.columns * unit,
-      height: this.tilemap.rows * unit,
+      width,
+      height,
+    });
+    for (let row = 0; row < this.tilemap.rows; row++) {
+      for (let col = 0; col < this.tilemap.grid[row].length; col++) {
+        console.log(row, col);
+      }
+    }
+  }
+
+  updateRect(cameraX, cameraY, cameraWidth, cameraHeight) {
+    this.actives = this.tilemap
+      .getRect(
+        cameraX,
+        cameraY,
+        cameraHeight / this.unit,
+        cameraWidth / this.unit
+      )
+      .flat()
+      .filter((tile) => tile);
+  }
+}
+
+class EntityLayer {
+  constructor(config = {}) {
+    const { unit, grid, tiles } = config;
+
+    const tilemap = grid.map((row, rIndex) => {
+      return row.map((column, cIndex) => {
+        const tile = tiles.find((tile) => tile.symbol === column);
+        if (tile)
+          tile.config.position = {
+            x: cIndex,
+            y: rIndex,
+          };
+
+        return tile ? new tile.type(tile.config) : null;
+      });
     });
 
-    // console.log(this);
+    this.unit = unit;
+    this.updated = false;
+    this.actives = [];
+    this.tilemap = new Grid(tilemap);
   }
 
-  getRect(position, width, height, aperture) {
-    const minX = Math.floor(position.x);
-    const minY = Math.floor(position.y);
-    const maxX = Math.floor(position.x + width);
-    const maxY = Math.floor(position.y + height);
+  updateRect(elapsedTime, cameraX, cameraY, cameraWidth, cameraHeight) {
+    this.actives = this.tilemap
+      .getRect(
+        cameraX,
+        cameraY,
+        cameraHeight / this.unit,
+        cameraWidth / this.unit
+      )
+      .flat()
+      .filter((tile) => tile);
+
+    // FIXME
+    // only for dynamic entities
+    // check and run the update function
+    if (this.actives.length > 0) {
+      this.actives.forEach((entity) => {
+        entity.update(elapsedTime);
+      });
+    }
+  }
+}
+
+class Game {
+  constructor(config = {}) {
+    const { player, camera, level } = config;
+
+    // FIXME
+    // check on the player
+    this.player = player;
+
+    // FIXME
+    // camera size cannot exceed display size
+    this.camera = camera
+      ? new Camera({
+          width: 832,
+          height: 640,
+          follow: this.player,
+        })
+      : {
+          width: 832,
+          height: 640,
+          position: { x: 0, y: 0 },
+        };
+
+    // FIXME
+    // the layers must have the same size
+    this.worldLayer = new WorldLayer(level.worldLayer);
+    this.entityLayer = new EntityLayer(level.entityLayer);
+
+    // FIXME
+    //size same as display + 3tiles aperture?
+    this.buffer = new Buffer({
+      width: this.camera.width,
+      height: this.camera.height,
+    });
   }
 
-  update() {
-    // aaa
-    // this.selected = this.tilemap
-    //   .getColumn(0, 9)
-    //   .flat()
-    //   .filter((tile) => tile !== null);
-    // if (this.selected.length > 0) {
-    //   this.selected.forEach((tile) => {
-    //     this.buffer.clear(
-    //       tile.position.x * this.unit,
-    //       tile.position.y * this.unit,
-    //       this.unit,
-    //       this.unit
-    //     );
-    //   });
-    // }
-  }
+  get frame() {
+    const self = this;
 
-  draw() {
-    // this.selected.forEach((tile) => {
-    //   this.atlas.sprite = { row: tile.atlas.row, column: tile.atlas.column };
-    //   this.buffer.draw(
-    //     this.atlas.sprite,
+    self.buffer.draw(
+      this.camera.buffer.canvas,
+      0,
+      0,
+      this.camera.width,
+      this.camera.height,
+      this.camera.position.x,
+      this.camera.position.y,
+      this.camera.width,
+      this.camera.height
+    );
+
+    self.buffer.draw(
+      this.player.sprite,
+      0,
+      0,
+      this.player.sprite.width,
+      this.player.sprite.height,
+      this.player.position.x,
+      this.player.position.y,
+      this.player.sprite.width,
+      this.player.sprite.height
+    );
+
+    // self.worldLayer.actives.forEach((active) => {
+    //   self.worldLayer.atlas.sprite = {
+    //     column: active.atlas.column,
+    //     row: active.atlas.row,
+    //   };
+
+    //   self.buffer.draw(
+    //     self.worldLayer.atlas.sprite,
     //     0,
     //     0,
-    //     this.atlas.sprite.width,
-    //     this.atlas.sprite.height,
-    //     tile.position.x * this.unit,
-    //     tile.position.y * this.unit,
-    //     this.unit,
-    //     this.unit
+    //     self.worldLayer.atlas.sprite.width,
+    //     self.worldLayer.atlas.sprite.height,
+    //     active.position.x,
+    //     active.position.y,
+    //     self.worldLayer.atlas.sprite.width,
+    //     self.worldLayer.atlas.sprite.height
     //   );
     // });
-  }
-}
 
-class Level {
-  constructor() {
-    this.camera = 0;
-    this.player = 0;
-    this.worldLayer = 0; // buffer
-    this.entityLayer = 0; // buffer
-    this.collisionLayer = 0; // buffer
+    // self.entityLayer.actives.forEach((active) => {
+    //   self.buffer.draw(
+    //     active.graphics.sprite,
+    //     0,
+    //     0,
+    //     active.graphics.sprite.width,
+    //     active.graphics.sprite.height,
+    //     active.position.x,
+    //     active.position.y,
+    //     active.graphics.sprite.width,
+    //     active.graphics.sprite.height
+    //   );
+    // });
+
+    return this.buffer.canvas;
   }
 
-  update() {
-    // update player
-    // update camera
+  update(elapsedTime) {
+    this.buffer.clear();
+    this.player.update(elapsedTime, 0, 0, 832 * 2, 640);
+    // this.buffer.clear(
+    //   this.camera.position.x,
+    //   this.camera.position.y,
+    //   this.camera.width,
+    //   this.camera.height
+    // );
+    // update player & camera
     // update entities
+    // this.entityLayer.updateRect(
+    //   elapsedTime,
+    //   this.camera.position.x,
+    //   this.camera.position.y,
+    //   this.camera.width,
+    //   this.camera.height
+    // );
     // update world
-  }
-
-  draw() {
-    // draw world
-    // draw player
-    // draw entities
+    // this.worldLayer.updateRect(
+    //   this.camera.position.x,
+    //   this.camera.position.y,
+    //   this.camera.width,
+    //   this.camera.height
+    // );
   }
 }
 
-export { WorldLayer };
+export { WorldLayer, Game };

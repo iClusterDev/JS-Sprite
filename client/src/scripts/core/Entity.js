@@ -1,10 +1,11 @@
 import Graphics from './Graphics';
 import Controller from './Controller';
+import Randomizer from './Randomizer';
 
 class Entity {
+  #id = null;
   #name = null;
   #solid = null;
-  #dynamic = null;
   #graphics = null;
   #position = null;
   #controller = null;
@@ -29,23 +30,26 @@ class Entity {
     const {
       name = null,
       solid = null,
-      dynamic = null,
       position = null,
       graphics = null,
       controller = null,
     } = config;
-    if (!name || !solid || !dynamic || !position || !graphics)
+    if (!name || !solid || !position || !graphics)
       throw new Error(
         'Entity: name, solid, dynamic, position and graphics parameters are required!'
       );
 
+    this.#id = Randomizer.id();
     this.#name = name;
     this.#solid = solid;
-    this.#dynamic = dynamic;
     this.#position = position;
     this.#graphics = new Graphics(graphics);
 
     this.#controller = controller ? new Controller(controller) : null;
+  }
+
+  get id() {
+    return this.#id;
   }
 
   get name() {
@@ -56,16 +60,24 @@ class Entity {
     return this.#solid;
   }
 
-  get dynamic() {
-    return this.#dynamic;
+  // FIXME
+  // get rid of this
+  // get graphics() {
+  //   return this.#graphics;
+  // }
+
+  get sprite() {
+    return this.#graphics.sprite;
   }
 
   get position() {
     return this.#position;
   }
 
-  get graphics() {
-    return this.#graphics;
+  // FIXME
+  // the tile position must have x & y
+  set position(position = { x: 0, y: 0 }) {
+    return (this.#position = position);
   }
 
   get controller() {
