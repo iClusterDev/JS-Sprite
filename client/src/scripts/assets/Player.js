@@ -1,5 +1,12 @@
 import Entity from '../core/Entity';
 
+const DISPLAY_W = 832;
+const DISPLAY_H = 640;
+const WORLD_W = DISPLAY_W * 3;
+const WORLD_H = DISPLAY_H;
+const WORLD_X = 0;
+const WORLD_Y = 0;
+
 class Player extends Entity {
   constructor(config = {}) {
     super(config);
@@ -11,7 +18,9 @@ class Player extends Entity {
     };
   }
 
-  update(elapsedTime, minPositionX, minPositionY, worldWidth, worldHeight) {
+  // FIXME
+  // update accepts only elapsedTime
+  update(elapsedTime) {
     this.updated = false;
 
     // update position
@@ -34,19 +43,19 @@ class Player extends Entity {
       let newPositionY = this.position.y + deltaY;
 
       // ...and here you check for out of bounds
-      let maxPositionX = worldWidth - this.sprite.width;
-      let maxPositionY = worldHeight - this.sprite.height;
+      let maxPositionX = WORLD_W - this.sprite.width;
+      let maxPositionY = WORLD_H - this.sprite.height;
 
-      if (newPositionX < minPositionX) {
-        this.position.x = minPositionX;
+      if (newPositionX < WORLD_X) {
+        this.position.x = WORLD_X;
       } else if (newPositionX > maxPositionX) {
         this.position.x = maxPositionX;
       } else {
         this.position.x += deltaX;
       }
 
-      if (newPositionY < minPositionY) {
-        this.position.y = minPositionY;
+      if (newPositionY < WORLD_Y) {
+        this.position.y = WORLD_Y;
       } else if (newPositionY > maxPositionY) {
         this.position.y = maxPositionY;
       } else {
